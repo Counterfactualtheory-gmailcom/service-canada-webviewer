@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="frame-ancestors *;">  
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Dalhousie COMPAiSS Input</title>
 <style>
@@ -143,50 +144,40 @@
       }
     }
 
-    function showToast(text, duration = 2000, asHTML = false) {
-      if (asHTML) toast.innerHTML = text;
-      else toast.textContent = text;
-      toast.className = "show";
-      setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-      }, duration);
-    }
+function showToast(text, duration = 2000, asHTML = false) {
+  if (asHTML) toast.innerHTML = text;
+  else toast.textContent = text;
+  toast.className = "show";
+  if (duration < 999999) {
+    setTimeout(() => {
+      toast.className = toast.className.replace("show", "");
+    }, duration);
+  }
+}
 
-    /* ---------- Main send function ---------- */
-    function sendInput() {
-      const message = inputBox.value.trim();
-      if (!message) {
-        alert("Please enter a question or issue.");
-        return;
-      }
+/* ---------- Main send function ---------- */
+// ✨ Updated sendInput() — shows animated dots, then deep-links back to app
+function sendInput() {
+  const message = inputBox.value.trim();
+  if (!message) {
+    alert("Please enter a question or issue.");
+    return;
+  }
 
-      let sent = false;
+  try {
+    // ✅ Send directly to Thunkable via bridge
+    ThunkableWebviewerExtension.postMessage(message);
+  } catch (e) {
+    console.error("Bridge error:", e);
+    alert("Unable to send message back to the app.");
+    return;
+  }
 
-      const trySend = () => {
-        if (!isBridgeReady() || sent) return;
-        try {
-          window.ThunkableWebviewerExtension.postMessage(message);
-          sent = true;
-          showToast("✅ Sent", 1200);
-          setTimeout(() => {
-            showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
-          }, 1300);
-        } catch (err) {
-          console.error("Bridge error:", err);
-          showToast("⚠️ Bridge Error", 2000);
-        }
-      };
+  // Optional visual feedback
+showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
 
-      whenBridgeReady(trySend);
-
-      // Fallback retry if the bridge event never fires
-      setTimeout(() => {
-        if (!sent && isBridgeReady()) trySend();
-      }, 1800);
-
-      inputBox.value = "";
-    }
-
+  inputBox.value = "";
+}
     /* ---------- Event listeners ---------- */
     inputBox.addEventListener("keypress", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
