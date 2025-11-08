@@ -119,12 +119,8 @@
 
     function debug(m){if(!showDebug)return;dbgEl.style.display='block';dbgEl.textContent+=(dbgEl.textContent?'\n':'')+m;}
 
-    function stripControlTags(md){
-      return String(md||'').replace(/<<START ANSWER>>/g,'').replace(/<<END ANSWER>>/g,'').replace(/\s*\[COMPLETED\]\s*$/,'').trim();
-    }
-
     function safeRender(md){
-      const raw=stripControlTags(md);
+      const raw=String(md||'');
       const html=marked.parse(raw||'');
       const clean1=DOMPurify.sanitize(html,{ADD_ATTR:['target','rel']});
       let linked=clean1;
