@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta http-equiv="Content-Security-Policy" content="frame-ancestors *;">  
+<meta http-equiv="Content-Security-Policy" content="frame-ancestors *;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dalhousie COMPAiSS Input</title>
+<title>Service Canada AI Assistant Input</title>
+
 <style>
   html, body {
     margin: 0;
     padding: 0;
     font-family: "Roboto", sans-serif;
-    background-color: #0F4079; /* ✅ Dalhousie Blue */
-    color: #f8c600;
+    background-color: #f2f2f2;          /* ✅ Grey background */
+    color: #FF0000;                     /* ✅ Service Canada Red */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,17 +31,18 @@
     font-size: 18px;
     font-weight: 600;
     margin: 0;
+    color: #FF0000;                     /* Title in red */
   }
 
   .subtitle {
     font-size: 14px;
-    color: #6EC1FF;
+    color: #0F4079;                     /* ✅ Keep blue for “Write in any language” */
     margin-top: 4px;
   }
 
   .input-box {
-    background-color: #111;
-    border: 2px solid #f8c600;
+    background-color: #fff;
+    border: 2px solid #FF0000;
     border-radius: 12px;
     padding: 16px;
     width: 85%;
@@ -48,7 +50,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    box-shadow: 0 0 8px rgba(248,198,0,0.3);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
   }
 
   textarea {
@@ -59,14 +61,14 @@
     outline: none;
     resize: none;
     height: 160px;
-    background-color: #fff;
+    background-color: #f9f9f9;
     color: #000;
     margin-bottom: 12px;
   }
 
   button {
-    background-color: #f8c600;
-    color: #000;
+    background-color: #FF0000;
+    color: #fff;
     font-weight: 600;
     border: none;
     border-radius: 8px;
@@ -76,13 +78,15 @@
     transition: background-color 0.2s ease-in-out;
   }
 
-  button:hover { background-color: #ffd500; }
+  button:hover {
+    background-color: #cc0000;
+  }
 
   #toast {
     visibility: hidden;
     min-width: 220px;
-    background-color: #f8c600;
-    color: #000;
+    background-color: #FF0000;
+    color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 12px;
@@ -102,9 +106,7 @@
   @keyframes fadein { from {bottom: 10px; opacity: 0;} to {bottom: 30px; opacity: 1;} }
   @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 10px; opacity: 0;} }
 
-  .dots span {
-    animation: blink 1.4s infinite both;
-  }
+  .dots span { animation: blink 1.4s infinite both; }
   .dots span:nth-child(2){ animation-delay:.2s; }
   .dots span:nth-child(3){ animation-delay:.4s; }
   @keyframes blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
@@ -113,7 +115,7 @@
 
 <body>
   <header>
-    <h1>Dalhousie COMPAiSS</h1>
+    <h1>Service Canada AI Assistant</h1>
     <div class="subtitle">Write in any language</div>
   </header>
 
@@ -125,13 +127,11 @@
   <div id="toast">✅ Sent</div>
 
   <script src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"></script>
-
   <script>
     const inputBox = document.getElementById("inputBox");
     const toast = document.getElementById("toast");
     const submitBtn = document.getElementById("submitBtn");
 
-    /* ---------- Bridge helpers ---------- */
     function isBridgeReady() {
       return typeof window.ThunkableWebviewerExtension !== "undefined";
     }
@@ -144,41 +144,36 @@
       }
     }
 
-function showToast(text, duration = 2000, asHTML = false) {
-  if (asHTML) toast.innerHTML = text;
-  else toast.textContent = text;
-  toast.className = "show";
-  if (duration < 999999) {
-    setTimeout(() => {
-      toast.className = toast.className.replace("show", "");
-    }, duration);
-  }
-}
+    function showToast(text, duration = 2000, asHTML = false) {
+      if (asHTML) toast.innerHTML = text;
+      else toast.textContent = text;
+      toast.className = "show";
+      if (duration < 999999) {
+        setTimeout(() => {
+          toast.className = toast.className.replace("show", "");
+        }, duration);
+      }
+    }
 
-/* ---------- Main send function ---------- */
-// ✨ Updated sendInput() — shows animated dots, then deep-links back to app
-function sendInput() {
-  const message = inputBox.value.trim();
-  if (!message) {
-    alert("Please enter a question or issue.");
-    return;
-  }
+    function sendInput() {
+      const message = inputBox.value.trim();
+      if (!message) {
+        alert("Please enter a question or issue.");
+        return;
+      }
 
-  try {
-    // ✅ Send directly to Thunkable via bridge
-    ThunkableWebviewerExtension.postMessage(message);
-  } catch (e) {
-    console.error("Bridge error:", e);
-    alert("Unable to send message back to the app.");
-    return;
-  }
+      try {
+        ThunkableWebviewerExtension.postMessage(message);
+      } catch (e) {
+        console.error("Bridge error:", e);
+        alert("Unable to send message back to the app.");
+        return;
+      }
 
-  // Optional visual feedback
-showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
+      showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
+      inputBox.value = "";
+    }
 
-  inputBox.value = "";
-}
-    /* ---------- Event listeners ---------- */
     inputBox.addEventListener("keypress", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -187,7 +182,6 @@ showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><spa
     });
 
     submitBtn.addEventListener("click", sendInput);
-
     console.log("Bridge script loaded:", isBridgeReady());
   </script>
 </body>
