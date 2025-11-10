@@ -22,10 +22,11 @@
     overflow-y: auto;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+header {
+  text-align: center;
+  margin-top: 8px;     /* ✅ slightly higher */
+  margin-bottom: 4px;  /* ✅ closer to box */
+}
 
   h1 {
     font-size: 18px;
@@ -45,24 +46,27 @@
     border: 2px solid #FF0000;
     border-radius: 12px;
     padding: 16px;
-    width: 85%;
     max-width: 420px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     box-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
+    width: 85%;           /* ✅ match Dalhousie visual width */
+    margin: 0 auto;
+    margin-left: -2px;    /* ✅ optical left nudge */
+    height: 65vh;         /* ✅ raise total box height */
   }
 
   textarea {
-    padding: 12px;
-    font-size: 16px;
+    padding: 14px;
+    font-size: 19px;
     border-radius: 8px;
     border: none;
     outline: none;
     resize: none;
     height: 160px;
     background-color: #f9f9f9;
-    color: #000;
+    color: #444444;
     margin-bottom: 12px;
   }
 
