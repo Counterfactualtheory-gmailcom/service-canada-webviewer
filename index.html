@@ -48,6 +48,12 @@
     #out blockquote { color: var(--muted) !important; }
     #out table th, #out table td { border-color: var(--border) !important; }
 
+/* 🔥 FIX FOR iOS CUT-OFF DESCENDERS (g, y, p, j, q, emoji, bullets) */
+#out * {
+  line-height: 1.4 !important;
+  padding-bottom: 2px !important;
+}
+    
     pre, code { white-space: pre-wrap; word-break: break-word; }
     blockquote {
       margin: 0 0 1em 0;
