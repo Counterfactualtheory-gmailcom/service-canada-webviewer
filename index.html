@@ -334,20 +334,15 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <script>
 let killed = false;
 
-/* Fires on minimize reliably on iOS + Android */
-window.addEventListener("pagehide", () => {
-  killed = true;
-});
+/* Fired when app is minimized */
+window.addEventListener("pagehide", () => { killed = true; });
+window.addEventListener("blur", () => { killed = true; });
 
-window.addEventListener("blur", () => {
-  killed = true;
-});
-
-/* Fires when app returns */
+/* Fired when app returns */
 window.addEventListener("focus", () => {
   if (killed) {
-    document.body.innerHTML = "";
-    setTimeout(() => window.location.replace("about:blank"), 10);
+    // Force a clean redirect to the INPUT SCREEN
+    window.location.replace("index_input.html");
   }
 });
 </script>
