@@ -334,15 +334,16 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <script>
 let killed = false;
 
-/* Fired when app is minimized */
+/* Mark session killed on minimize */
 window.addEventListener("pagehide", () => { killed = true; });
 window.addEventListener("blur", () => { killed = true; });
 
-/* Fired when app returns */
+/* Redirect back to input screen on resume */
 window.addEventListener("focus", () => {
   if (killed) {
-    // Force a clean redirect to the INPUT SCREEN
-    window.location.replace("index_input.html");
+    // Automatically build the correct URL to index_input.html
+    const path = window.location.href.replace("index.html", "") + "index_input.html";
+    window.location.replace(path);
   }
 });
 </script>
