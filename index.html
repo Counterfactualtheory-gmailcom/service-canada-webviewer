@@ -334,14 +334,20 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <script>
 let killed = false;
 
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") killed = true;
+/* Fires on minimize reliably on iOS + Android */
+window.addEventListener("pagehide", () => {
+  killed = true;
 });
 
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible" && killed) {
+window.addEventListener("blur", () => {
+  killed = true;
+});
+
+/* Fires when app returns */
+window.addEventListener("focus", () => {
+  if (killed) {
     document.body.innerHTML = "";
-    setTimeout(() => window.location.replace("about:blank"), 50);
+    setTimeout(() => window.location.replace("about:blank"), 10);
   }
 });
 </script>
