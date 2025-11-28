@@ -329,30 +329,6 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupBtn.disabled = false;
       followupText.value = '';
     };
-  </script>
-
-<script>
-/* Minimal universal “return to input screen” handler */
-
-function goToInput() {
-  const url = window.location.href.replace("index.html", "") + "index_input.html";
-  window.location.replace(url);
-}
-
-/* 1 — Detect when the WebView wakes up from minimize */
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") {
-    goToInput();
-  }
-});
-
-/* 2 — Detect when the WebView was unloaded and restored */
-window.addEventListener("pageshow", (e) => {
-  if (e.persisted) {
-    goToInput();
-  }
-});
-</script>
-  
+  </script>  
 </body>
 </html>
