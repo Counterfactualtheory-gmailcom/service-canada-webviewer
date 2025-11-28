@@ -332,18 +332,24 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-let killed = false;
+/* Minimal universal “return to input screen” handler */
 
-/* Mark session killed on minimize */
-window.addEventListener("pagehide", () => { killed = true; });
-window.addEventListener("blur", () => { killed = true; });
+function goToInput() {
+  const url = window.location.href.replace("index.html", "") + "index_input.html";
+  window.location.replace(url);
+}
 
-/* Redirect back to input screen on resume */
-window.addEventListener("focus", () => {
-  if (killed) {
-    // Automatically build the correct URL to index_input.html
-    const path = window.location.href.replace("index.html", "") + "index_input.html";
-    window.location.replace(path);
+/* 1 — Detect when the WebView wakes up from minimize */
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    goToInput();
+  }
+});
+
+/* 2 — Detect when the WebView was unloaded and restored */
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) {
+    goToInput();
   }
 });
 </script>
