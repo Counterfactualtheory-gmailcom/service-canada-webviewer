@@ -337,7 +337,7 @@ let timer;
 
 function goToInput() {
   const url = window.location.href.replace("index.html", "") + "index_input.html";
-  window.location.replace(url);
+  window.location.href = url;
 }
 
 function resetTimer() {
