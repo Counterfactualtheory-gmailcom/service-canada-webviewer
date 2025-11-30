@@ -48,6 +48,22 @@
     #out blockquote { color: var(--muted) !important; }
     #out table th, #out table td { border-color: var(--border) !important; }
 
+/* -----------------------------------------------------
+   LOCK #out TEXT PERFECTLY INSIDE THE RED BORDER
+   (stops sideways drift or text escaping)
+------------------------------------------------------ */
+#out {
+  overflow-x: hidden !important;     /* stop horizontal drifting */
+  width: 100% !important;            /* full stable width */
+  box-sizing: border-box !important; /* keep padding & borders contained */
+}
+
+#out * {
+  max-width: 100% !important;        /* keep all child elements inside */
+  box-sizing: border-box !important; /* prevent overflow */
+  word-wrap: break-word !important;  /* prevent long links from pushing out */
+}
+    
 /* 🔥 FIX FOR iOS CUT-OFF DESCENDERS (g, y, p, j, q, emoji, bullets) */
 #out * {
   line-height: 1.4 !important;
