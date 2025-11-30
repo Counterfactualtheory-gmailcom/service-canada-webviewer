@@ -336,11 +336,11 @@ ThunkableWebviewerExtension.receiveMessage(function (msg) {
       }
     };
 
-    followupBtn.onclick = async () => {
-      const q = followupText.value.trim();
-      if (!q) return;
-      loading.style.display = 'block';
-      followupBtn.disabled = true;
+followupBtn.onclick = async () => {
+  const q = followupText.value.trim();
+  if (!q) return;
+  loading.style.display = 'none';      // ← FIXES BOTTOM APPEARING MESSAGE
+  followupBtn.disabled = true;
       try {
 const res = await fetch('https://servicecanbackendproduction-production.up.railway.app/ask', {
   method: 'POST',
