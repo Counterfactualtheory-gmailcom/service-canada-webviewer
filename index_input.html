@@ -110,22 +110,31 @@ const inputBox = document.getElementById("inputBox");
 const submitBtn = document.getElementById("submitBtn");
 const toast = document.getElementById("toast");
 
-// Notify Thunkable that WebViewer is ready
-ThunkableWebviewerExtension.receiveMessage(msg => {
+// Listen for ALL messages from Thunkable
+ThunkableWebviewerExtension.receiveMessage(function (msg) {
+
+  // Handshake — Thunkable asks if WebViewer is ready
   if (msg === "are_you_ready") {
     try {
       ThunkableWebviewerExtension.postMessage("ready");
     } catch (e) {
       console.log("ready handshake error:", e);
     }
+    return;
   }
 
+  // Output screen requests the previous question
   if (msg === "request_question") {
     ThunkableWebviewerExtension.postMessage({
       type: "QUESTION",
       payload: inputBox.value.trim()
     });
+    return;
   }
+
+  // IMPORTANT:
+  // DO NOT block Thunkable navigation commands like “go_output”
+  // We simply allow them to pass through with no action here.
 });
 
 // Toast helper
