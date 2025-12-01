@@ -33,12 +33,13 @@
       padding: var(--pad);
     }
 
-/* --- Lock answer box width & alignment --- */
+/* --- Lock answer box width & alignment (centered like McGill) --- */
 #out {
-  width: calc(100% - 60px);        /* prevents touching the outer frame */
-  margin-left: calc(30px - 6px);   /* micro-shift left to perfect-center UI */
-  margin-right: 30px;
-  box-sizing: border-box;          /* keeps everything inside width */
+  width: calc(100% - 60px);    /* keeps spacing from red frame */
+  margin-left: -6px;           /* ← micro left shift */
+  margin-right: 30px;          /* same right spacing */
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
     
     a {
