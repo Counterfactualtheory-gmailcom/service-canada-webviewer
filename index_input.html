@@ -203,25 +203,65 @@ try {
 
 <script>
 /* -------------------------------------------------------
-   SAFE INPUT LISTENER
-   • never reloads the page
-   • does not interfere with auto-return
-   • does not fire before bridge is ready
+   INPUT SCREEN — IDENTICAL TO FOLLOW-UP LOGIC
 -------------------------------------------------------- */
 
-document.addEventListener("ThunkableWebviewerExtensionReady", () => {
-  try {
-    ThunkableWebviewerExtension.receiveMessage(function (msg) {
-      console.log("📩 INPUT RECEIVED MESSAGE:", msg);
+const inputBox = document.getElementById("input-box");
+const submitBtn = document.getElementById("submit-btn");
+const loading = document.getElementById("loading");
 
-      // keep this if you still need the command
-      if (msg === "servicecanada_return_to_input") {
-        console.log("🔄 Already on input screen — no action needed");
-      }
-    });
+/* Notify Thunkable that the WebViewer is ready */
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    ThunkableWebviewerExtension.postMessage("ready");
   } catch (e) {
-    console.log("❌ INPUT LISTENER ERROR:", e);
-    // IMPORTANT: DO NOT reload here
+    console.log("Ready handshake error:", e);
+  }
+});
+
+/* -------------------------------------------------------
+   SUBMIT QUESTION → BACKEND → SEND ANSWER BACK TO APP
+-------------------------------------------------------- */
+submitBtn.onclick = async () => {
+  const q = inputBox.value.trim();
+  if (!q) return;
+
+  loading.style.display = "block";
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch("https://servicecanbackendproduction-production.up.railway.app/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q })
+    });
+
+    const data = await res.json();
+
+    /* Send clean answer back to the Output WebViewer */
+    ThunkableWebviewerExtension.postMessage({
+      type: "ANSWER",
+      payload: data.answer || "(no response)"
+    });
+
+  } catch (err) {
+    alert("Error sending question: " + err.message);
+  }
+
+  loading.style.display = "none";
+  submitBtn.disabled = false;
+};
+
+/* -------------------------------------------------------
+   OPTIONAL: RESPOND IF THUNKABLE REQUESTS THE QUESTION
+-------------------------------------------------------- */
+ThunkableWebviewerExtension.receiveMessage(function (msg) {
+  if (msg === "request_question") {
+    const q = inputBox.value.trim();
+    ThunkableWebviewerExtension.postMessage({
+      type: "QUESTION",
+      payload: q
+    });
   }
 });
 </script>
