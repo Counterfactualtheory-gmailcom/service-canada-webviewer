@@ -363,20 +363,13 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-/* ---------------------------------------------------
-   AUTO RETURN AFTER 1 MINUTE — MESSAGE ONLY
-   (Uses Thunkable’s built-in screen navigation)
----------------------------------------------------- */
-
-const RETURN_DELAY = 60 * 1000; // 1 minute
-
 setTimeout(() => {
   try {
-    ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT_NOW");
+    ThunkableWebviewerExtension.postMessage("GO_BACK_TO_INPUT");
   } catch (e) {
-    console.log("Fallback navigation failed:", e);
+    console.log("Bridge unavailable:", e);
   }
-}, RETURN_DELAY);
+}, 60000); // return after 1 minute
 </script>
   
 </body>
