@@ -191,14 +191,23 @@ header {
 
 <script>
 /* ---------------------------------------------------
-   LISTEN FOR AUTO-RETURN SIGNAL FROM OUTPUT SCREEN
-   AND FORCE A FULL PAGE RELOAD (revives WebView JS)
+   UNIFIED MESSAGE HANDLER
+   ✔ Handles auto-return from output screen
+   ✔ Handles any other incoming messages
+   ✔ Prevents listener overwriting (the root cause)
 ---------------------------------------------------- */
+
 try {
   ThunkableWebviewerExtension.receiveMessage(function (msg) {
+
+    // 1️⃣ AUTO-RETURN FROM OUTPUT SCREEN
     if (msg === "RETURN_TO_INPUT_NOW") {
-      window.location.reload();   // 🔥 Hard reload resets all logic
+      window.location.reload();   // 🔥 resets WebView JS fully
+      return;
     }
+
+    // 2️⃣ (Future-proof) — handle any other messages
+    console.log("Received message in INPUT screen:", msg);
   });
 } catch (e) {
   window.location.reload();
