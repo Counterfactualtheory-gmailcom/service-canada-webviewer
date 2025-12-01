@@ -190,18 +190,13 @@ header {
   </script>
 
 <script>
-/* ---------------------------------------------------
-   LISTEN FOR AUTO-RETURN SIGNAL FROM OUTPUT SCREEN
-   ✔ Message name MATCHES the sender
-   ✔ Hard reload revives dead WebView JS
----------------------------------------------------- */
 try {
   ThunkableWebviewerExtension.receiveMessage(function (msg) {
     console.log("📩 INPUT RECEIVED MESSAGE:", msg);
 
     if (msg === "SERVICECANADA_RETURN_TO_INPUT") {
       console.log("🔄 RELOADING INPUT SCREEN NOW");
-      window.location.reload();   // revive webview
+      window.location.reload();
       return;
     }
   });
