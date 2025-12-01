@@ -362,35 +362,43 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-function sendReturnSignal() {
-  try {
-    console.log("🔥 OUTPUT TIMER FIRED – sending MESSAGE");
+/* -------------------------------------------------------
+   AUTO-RETURN FIX — FINAL STABLE VERSION
+   • timer activates ONLY after first answer arrives
+   • prevents redirect before handshake
+   • 10-second timeout (testing mode)
+-------------------------------------------------------- */
 
-    // 🔥 WAKE THE BRIDGE RIGHT BEFORE SENDING
-    ThunkableWebviewerExtension.postMessage("ready");
+const RETURN_DELAY = 10 * 1000; // 🔥 10 seconds
+let returnTimer = null;
+let handshakeDone = false;
 
-    // 🔥 SEND THE REAL MESSAGE
-    setTimeout(() => {
-      ThunkableWebviewerExtension.postMessage("servicecanada_return_to_input");
-      console.log("📤 SENT: servicecanada_return_to_input");
-    }, 300);
-    
-  } catch (e) {
-    console.log("❌ Bridge error:", e);
-  }
+/* Called ONLY after the first safeRender() finishes */
+function enableAutoReturnTimer() {
+  handshakeDone = true;
+  resetReturnTimer();
 }
 
-function whenBridgeReady(fn) {
-  if (typeof ThunkableWebviewerExtension !== "undefined") {
-    fn();
-  } else {
-    document.addEventListener("ThunkableWebviewerExtensionReady", fn, { once: true });
-  }
+/* Redirect safely to input */
+function goToInput() {
+  const base = window.location.href.replace("index.html", "");
+  window.location.replace(base + "index_input.html");   // 🔥 FIXED: use replace() NOT href
 }
 
-whenBridgeReady(() => {
-  setTimeout(sendReturnSignal, 10000);
+/* Reset timer if handshake completed */
+function resetReturnTimer() {
+  if (!handshakeDone) return;
+  clearTimeout(returnTimer);
+  returnTimer = setTimeout(goToInput, RETURN_DELAY);
+}
+
+/* Real gestures keep session alive */
+["touchstart", "click", "scroll", "keydown"].forEach(evt => {
+  document.addEventListener(evt, resetReturnTimer, { passive: true });
 });
+
+/* Handshake event fired after safeRender() completes */
+document.addEventListener("ANSWER_RENDERED", enableAutoReturnTimer);
 </script>
   
 </body>
