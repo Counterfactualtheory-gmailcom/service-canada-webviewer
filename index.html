@@ -196,6 +196,13 @@
   <script>
     marked.setOptions({ gfm:true, breaks:true, mangle:false, headerIds:false });
     const outEl=document.getElementById('out');
+// 🔥 Restore saved output on page load
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("last_answer_html");
+  if (saved) {
+    outEl.innerHTML = saved;
+  }
+}); 
     const dbgEl=document.getElementById('dbg');
     const showDebug=/[?&]debug=1\b/.test(location.search);
     const followupBtn=document.getElementById('followup-btn');
