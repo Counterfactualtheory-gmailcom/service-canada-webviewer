@@ -363,19 +363,15 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-/* ---------------------------------------------------
-   AUTO RETURN TO INPUT SCREEN AFTER 1 MINUTE
-   ✔ Uses the same message the input screen listens for
-   ✔ Matches yesterday’s working flow
----------------------------------------------------- */
-
 setTimeout(() => {
+  console.log("🔥 OUTPUT TIMER FIRED");
   try {
-    ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT_NOW");
+    ThunkableWebviewerExtension.postMessage("BACK_TO_INPUT");
+    console.log("📤 MESSAGE SENT: BACK_TO_INPUT");
   } catch (e) {
-    console.log("Navigation failed:", e);
+    console.log("❌ ERROR SENDING MESSAGE:", e);
   }
-}, 60000);  // 1 minute
+}, 10000); // 10 seconds for testing
 </script>
   
 </body>
