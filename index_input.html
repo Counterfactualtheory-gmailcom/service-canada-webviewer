@@ -206,9 +206,9 @@ try {
    INPUT SCREEN — IDENTICAL TO FOLLOW-UP LOGIC
 -------------------------------------------------------- */
 
-const inputBox = document.getElementById("input-box");
-const submitBtn = document.getElementById("submit-btn");
-const loading = document.getElementById("loading");
+const inputBox = document.getElementById("inputBox");     // FIXED
+const submitBtn = document.getElementById("submitBtn");   // FIXED
+const toast = document.getElementById("toast");           // FIXED
 
 /* Notify Thunkable that the WebViewer is ready */
 document.addEventListener("DOMContentLoaded", () => {
@@ -219,6 +219,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/* Utility: Show toast */
+function showToast(msg) {
+  toast.innerHTML = msg;
+  toast.className = "show";
+}
+
 /* -------------------------------------------------------
    SUBMIT QUESTION → BACKEND → SEND ANSWER BACK TO APP
 -------------------------------------------------------- */
@@ -226,7 +232,7 @@ submitBtn.onclick = async () => {
   const q = inputBox.value.trim();
   if (!q) return;
 
-  loading.style.display = "block";
+  showToast("💬 Sending…");
   submitBtn.disabled = true;
 
   try {
@@ -238,29 +244,27 @@ submitBtn.onclick = async () => {
 
     const data = await res.json();
 
-    /* Send clean answer back to the Output WebViewer */
+    /* Send answer back to Output viewer */
     ThunkableWebviewerExtension.postMessage({
       type: "ANSWER",
       payload: data.answer || "(no response)"
     });
 
   } catch (err) {
-    alert("Error sending question: " + err.message);
+    showToast("⚠️ Error: " + err.message);
   }
 
-  loading.style.display = "none";
   submitBtn.disabled = false;
 };
 
 /* -------------------------------------------------------
-   OPTIONAL: RESPOND IF THUNKABLE REQUESTS THE QUESTION
+   OPTIONAL: respond if Thunkable asks for current question
 -------------------------------------------------------- */
 ThunkableWebviewerExtension.receiveMessage(function (msg) {
   if (msg === "request_question") {
-    const q = inputBox.value.trim();
     ThunkableWebviewerExtension.postMessage({
       type: "QUESTION",
-      payload: q
+      payload: inputBox.value.trim()
     });
   }
 });
