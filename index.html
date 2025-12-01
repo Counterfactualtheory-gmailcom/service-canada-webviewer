@@ -33,13 +33,14 @@
       padding: var(--pad);
     }
 
-/* --- Lock answer box width & alignment (centered like McGill) --- */
+/* --- Center answer output box (same as McGill) --- */
 #out {
-  width: calc(100% - 60px);    /* keeps spacing from red frame */
-  margin-left: -6px;           /* ← micro left shift */
-  margin-right: 30px;          /* same right spacing */
+  width: calc(100% - 60px);
+  margin-left: 30px;        /* CENTERED */
+  margin-right: 30px;
   box-sizing: border-box;
   overflow-x: hidden;
+  word-wrap: break-word;
 }
     
     a {
