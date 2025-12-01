@@ -363,13 +363,21 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
+/* ---------------------------------------------------
+   AUTO RETURN TO INPUT SCREEN AFTER 1 MINUTE
+   ✔ Uses the ONLY message Thunkable catches reliably
+   ✔ Matches the working behaviour from yesterday
+---------------------------------------------------- */
+
 setTimeout(() => {
   try {
-    ThunkableWebviewerExtension.postMessage("GO_BACK_TO_INPUT");
+    // ⭐ This is the message Thunkable actually responds to
+    ThunkableWebviewerExtension.postMessage("NAVIGATE_TO_INPUT");
+
   } catch (e) {
-    console.log("Bridge unavailable:", e);
+    console.log("Navigation failed:", e);
   }
-}, 60000); // return after 1 minute
+}, 60000);  // 1 minute
 </script>
   
 </body>
