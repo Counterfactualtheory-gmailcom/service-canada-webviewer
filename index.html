@@ -365,15 +365,13 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <script>
 /* ---------------------------------------------------
    AUTO RETURN TO INPUT SCREEN AFTER 1 MINUTE
-   ✔ Uses the ONLY message Thunkable catches reliably
-   ✔ Matches the working behaviour from yesterday
+   ✔ Uses the same message the input screen listens for
+   ✔ Matches yesterday’s working flow
 ---------------------------------------------------- */
 
 setTimeout(() => {
   try {
-    // ⭐ This is the message Thunkable actually responds to
-    ThunkableWebviewerExtension.postMessage("NAVIGATE_TO_INPUT");
-
+    ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT_NOW");
   } catch (e) {
     console.log("Navigation failed:", e);
   }
