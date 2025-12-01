@@ -363,41 +363,38 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 
 <script>
 /* -------------------------------------------------------
-   AUTO-RETURN FIX — FINAL STABLE VERSION
-   • timer activates ONLY after first answer arrives
-   • prevents redirect before handshake
-   • 10-second timeout (testing mode)
+   AUTO-RETURN — CORRECT URL + CORRECT LOGIC
 -------------------------------------------------------- */
-
-const RETURN_DELAY = 10 * 1000; // 🔥 10 seconds
+const RETURN_DELAY = 10 * 1000; // 10 seconds for testing
 let returnTimer = null;
 let handshakeDone = false;
 
-/* Called ONLY after the first safeRender() finishes */
+/* Called only after safeRender() fires ANSWER_RENDERED */
 function enableAutoReturnTimer() {
   handshakeDone = true;
   resetReturnTimer();
 }
 
-/* Redirect safely to input */
+/* Redirect safely to the CONFIRMED input URL */
 function goToInput() {
-  const base = window.location.href.replace("index.html", "");
-  window.location.replace(base + "index_input.html");   // 🔥 FIXED: use replace() NOT href
+  window.location.replace(
+    "https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html"
+  );
 }
 
-/* Reset timer if handshake completed */
+/* Reset timer only after handshake */
 function resetReturnTimer() {
   if (!handshakeDone) return;
   clearTimeout(returnTimer);
   returnTimer = setTimeout(goToInput, RETURN_DELAY);
 }
 
-/* Real gestures keep session alive */
+/* User activity cancels countdown */
 ["touchstart", "click", "scroll", "keydown"].forEach(evt => {
   document.addEventListener(evt, resetReturnTimer, { passive: true });
 });
 
-/* Handshake event fired after safeRender() completes */
+/* safeRender → ANSWER_RENDERED → start the timer */
 document.addEventListener("ANSWER_RENDERED", enableAutoReturnTimer);
 </script>
   
