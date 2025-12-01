@@ -48,22 +48,6 @@
     #out blockquote { color: var(--muted) !important; }
     #out table th, #out table td { border-color: var(--border) !important; }
 
-/* -----------------------------------------------------
-   LOCK #out TEXT PERFECTLY INSIDE THE RED BORDER
-   (stops sideways drift or text escaping)
------------------------------------------------------- */
-#out {
-  overflow-x: hidden !important;     /* stop horizontal drifting */
-  width: 100% !important;            /* full stable width */
-  box-sizing: border-box !important; /* keep padding & borders contained */
-}
-
-#out * {
-  max-width: 100% !important;        /* keep all child elements inside */
-  box-sizing: border-box !important; /* prevent overflow */
-  word-wrap: break-word !important;  /* prevent long links from pushing out */
-}
-    
 /* 🔥 FIX FOR iOS CUT-OFF DESCENDERS (g, y, p, j, q, emoji, bullets) */
 #out * {
   line-height: 1.4 !important;
@@ -108,8 +92,6 @@
       border-radius: 8px;
       border: 2px solid var(--accent);
       box-shadow: 0 0 6px rgba(255, 0, 0, 0.2);
-      position: relative;
-      left: -4px;   /* ← moves ONLY the container border */
     }
 
     #followup-text {
@@ -132,7 +114,6 @@
       width: 100%;
       padding: 10px;
       font-weight: 600;
-      font-size: 17px;    /* ← FIX ADDED */
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -146,16 +127,6 @@
     }
     #copy-btn:hover, #followup-btn:hover { opacity: 0.9; }
 
-/* -----------------------------------------------------
-   FIX: Perfectly center follow-up box + buttons with #out
------------------------------------------------------- */
-#followup-box,
-#followup-text,
-#followup-btn,
-#copy-btn {
-  position: relative;
-  left: -3px;  /* match #out’s -5px optical centering */
-}   
     /* 🔹 Animated dots */
     #loading {
       display: none;
@@ -182,13 +153,12 @@
   <div class="wrap">
     <div id="out">Waiting for content…</div>
 
-<div id="followup-box">
-<textarea id="followup-text" placeholder="Tap & type your next question, issue or concerns here..."></textarea>
-  <button id="followup-btn">Submit</button>
-  <button id="copy-btn">Copy All</button>
-</div>
-
-<div id="loading" style="display:none;">Answer coming<span>.</span><span>.</span><span>.</span></div>
+    <div id="followup-box">
+      <textarea id="followup-text" placeholder="Type a follow-up question or add more information..."></textarea>
+      <button id="followup-btn">Submit Follow-Up</button>
+      <button id="copy-btn">Copy All</button>
+      <div id="loading">Answer coming<span>.</span><span>.</span><span>.</span></div>
+    </div>
 
     <div id="dbg" class="debug"></div>
   </div>
@@ -196,13 +166,6 @@
   <script>
     marked.setOptions({ gfm:true, breaks:true, mangle:false, headerIds:false });
     const outEl=document.getElementById('out');
-// 🔥 Restore saved output on page load
-window.addEventListener("DOMContentLoaded", () => {
-  const saved = localStorage.getItem("last_answer_html");
-  if (saved) {
-    outEl.innerHTML = saved;
-  }
-}); 
     const dbgEl=document.getElementById('dbg');
     const showDebug=/[?&]debug=1\b/.test(location.search);
     const followupBtn=document.getElementById('followup-btn');
@@ -250,30 +213,22 @@ function safeRender(md){
   outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
   lastAnswer = outEl.innerText;
 
-  // 🔥 Save the new output permanently
-try {
-  localStorage.setItem("last_answer_html", outEl.innerHTML);
-} catch (e) {
-  console.log("localStorage save error:", e);
-}
-
   // ✅ Normalize all links
   outEl.querySelectorAll('a').forEach(a => {
     a.target = '_blank';
     a.rel = 'noopener';
   });
 
-  // Attach WebViewer link handler once
+  // ✅ Attach WebViewer link handler once
   if (!linkHandlerAttached) {
-    outEl.addEventListener("click", e => {
-      const a = e.target.closest && e.target.closest("a[href]");
+    outEl.addEventListener('click', e => {
+      const a = e.target.closest && e.target.closest('a[href]');
       if (!a) return;
       const url = a.href;
-
       if (/^https?:/i.test(url)) {
         e.preventDefault();
         try {
-          ThunkableWebviewerExtension.postMessage("OPEN_IN_BROWSER::" + url);
+          ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
         } catch (err) {
           window.location.assign(url);
         }
@@ -281,18 +236,9 @@ try {
     });
     linkHandlerAttached = true;
   }
+}
+    let firstMessageReceived=false;let readyPingerId=null;
 
-  /* -----------------------------------------------------
-     CRITICAL FIX
-     Fire ANSWER_RENDERED so auto-return handshake runs
-  ------------------------------------------------------ */
-  document.dispatchEvent(new Event("ANSWER_RENDERED"));
-}  // ← THIS closes safeRender() — MUST remain here
-
-let firstMessageReceived = false;
-let readyPingerId = null;
-    
-// ✅ FIX: Align Service Canada render timing with McGill/DAL (prevents tag bleed)
 // ✅ FIX: Align Service Canada render timing with McGill/DAL (prevents tag bleed)
 ThunkableWebviewerExtension.receiveMessage(function (msg) {
   try {
@@ -302,21 +248,21 @@ ThunkableWebviewerExtension.receiveMessage(function (msg) {
       readyPingerId = null;
     }
 
-    // Delay ensures DOM + libraries are ready
+    // ⏳ Add brief delay so DOM & libraries are ready before cleaning
     setTimeout(() => {
       const payload =
         msg && typeof msg === "object" && "payload" in msg
           ? msg.payload
           : msg;
-
       safeRender(payload);
-    }, 50);
+    }, 50); // 50 ms ≈ McGill’s natural “Answer coming…” delay
 
   } catch (err) {
     outEl.textContent = "Render error:" + err;
     debug("Render error:" + (err && err.stack || err));
   }
 });
+
     function pingReady(){
       try{ThunkableWebviewerExtension.postMessage('ready');}
       catch(e){debug('postMessage error:'+e);}
@@ -363,11 +309,11 @@ ThunkableWebviewerExtension.receiveMessage(function (msg) {
       }
     };
 
-followupBtn.onclick = async () => {
-  const q = followupText.value.trim();
-  if (!q) return;
-loading.style.display = 'block';
-followupBtn.disabled = true;
+    followupBtn.onclick = async () => {
+      const q = followupText.value.trim();
+      if (!q) return;
+      loading.style.display = 'block';
+      followupBtn.disabled = true;
       try {
 const res = await fetch('https://servicecanbackendproduction-production.up.railway.app/ask', {
   method: 'POST',
@@ -384,63 +330,6 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
   </script>
-
-<!--
-<script>
-/* -------------------------------------------------------
-   AUTO-RETURN — FIXED FOR SERVICE CANADA DELAY
-   • 10-second test timeout
-   • Waits for safeRender + the 50ms delay
-   • Guaranteed ANSWER_RENDERED fire
--------------------------------------------------------- */
-
-const RETURN_DELAY = 10 * 1000; // 10 seconds for testing
-let returnTimer = null;
-let handshakeDone = false;
-
-/* SafeRender DELAY FIX:
-   Service Canada uses a 50ms delayed safeRender.
-   We must listen for BOTH:
-   1. ANSWER_RENDERED (manual dispatch)
-   2. Any post-render DOM change event as fallback
-*/
-function enableAutoReturnTimer() {
-  if (handshakeDone) return;   // prevent double-start
-  handshakeDone = true;
-  resetReturnTimer();
-}
-
-/* Correct input URL */
-function goToInput() {
-  window.location.replace(
-    "https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html"
-  );
-}
-
-/* Reset timer only after handshake */
-function resetReturnTimer() {
-  if (!handshakeDone) return;
-  clearTimeout(returnTimer);
-  returnTimer = setTimeout(goToInput, RETURN_DELAY);
-}
-
-/* Activity cancels timeout */
-["touchstart","click","scroll","keydown"].forEach(evt => {
-  document.addEventListener(evt, resetReturnTimer, { passive: true });
-});
-
-/* Primary trigger */
-document.addEventListener("ANSWER_RENDERED", enableAutoReturnTimer);
-
-/* Fallback trigger:
-   SC safeRender uses setTimeout → ANSWER_RENDERED may miss
-   MutationObserver guarantees handshake even if event is late
-*/
-new MutationObserver(() => {
-  if (!handshakeDone) enableAutoReturnTimer();
-}).observe(document.getElementById("out"), { childList: true });
-</script>
--->
   
 </body>
 </html>
