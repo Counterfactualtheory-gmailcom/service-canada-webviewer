@@ -133,6 +133,12 @@ header {
 
   <script src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"></script>
   <script>
+    // -----------------------------------------------------------
+// ABSOLUTE FIX: Force reload if page was restored from cache
+// -----------------------------------------------------------
+if (performance.navigation.type === 2) {
+  location.reload(true);
+}
     const inputBox = document.getElementById("inputBox");
     const toast = document.getElementById("toast");
     const submitBtn = document.getElementById("submitBtn");
