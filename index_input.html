@@ -162,9 +162,6 @@ submitBtn.onclick = async () => {
 
     const data = await res.json();
 
-// 🔥 FIRST: instruct Thunkable to switch screens
-ThunkableWebviewerExtension.postMessage("go_output");
-
 // 🔥 SECOND: send the answer to the output screen
 ThunkableWebviewerExtension.postMessage({
   type: "ANSWER",
