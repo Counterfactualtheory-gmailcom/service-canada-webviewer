@@ -111,9 +111,21 @@ const submitBtn = document.getElementById("submitBtn");
 const toast = document.getElementById("toast");
 
 // Notify Thunkable that WebViewer is ready
-document.addEventListener("DOMContentLoaded", () => {
-  try { ThunkableWebviewerExtension.postMessage("ready"); }
-  catch (e) { console.log("ready handshake error:", e); }
+ThunkableWebviewerExtension.receiveMessage(msg => {
+  if (msg === "are_you_ready") {
+    try {
+      ThunkableWebviewerExtension.postMessage("ready");
+    } catch (e) {
+      console.log("ready handshake error:", e);
+    }
+  }
+
+  if (msg === "request_question") {
+    ThunkableWebviewerExtension.postMessage({
+      type: "QUESTION",
+      payload: inputBox.value.trim()
+    });
+  }
 });
 
 // Toast helper
