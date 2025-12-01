@@ -96,25 +96,26 @@
 
 /* --- Center inner box so it never touches the outer red frame --- */
 #followup-box {
-  width: calc(100% - 60px);  /* 30px margin on both sides */
-  margin-left: auto;
-  margin-right: auto;
+  width: calc(100% - 60px);   /* same width */
+  margin-left: calc(30px - 6px);  /* shift left by 6px */
+  margin-right: 30px;            /* keep right margin unchanged */
 }
 
-    #followup-text {
-      width: 100%;
-      min-height: 90px;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      outline: none;
-      resize: none;
-      margin: 0;
-      box-sizing: border-box;
-      background-color: #f9f9f9;
-      color: #000;
-    }
+/* --- Larger textarea --- */
+#followup-text {
+  width: 100%;
+  min-height: 140px;   /* increased height */
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  resize: none;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  color: #000;
+}
 
 #followup-btn, #copy-btn {
     margin-top: 8px;
