@@ -365,19 +365,22 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <script>
 /* ---------------------------------------------------
    AUTO RETURN TO INPUT SCREEN AFTER 1 MINUTE
+   (Thunkable WebViewer version – WORKING)
 ---------------------------------------------------- */
 
 const RETURN_DELAY = 60 * 1000; // 1 minute
 
 setTimeout(() => {
   try {
+    // ⭐ MUST use Thunkable navigation – browser navigation CANNOT open this URL
     ThunkableWebviewerExtension.postMessage(
-      "RETURN_TO_INPUT_NOW::https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html"
+      "OPEN::https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html"
     );
   } catch (e) {
-    // Fallback if Thunkable bridge is asleep
+    // ❌ Will usually NOT work because this URL is not a real public domain
+    // but we keep as fallback for rare Android cases
     window.location.href =
-      "https://counterfactualtheory-gmailcom.github.io/servicecanada-webviewer/index_input.html";
+      "https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html";
   }
 }, RETURN_DELAY);
 </script>
