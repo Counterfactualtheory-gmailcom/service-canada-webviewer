@@ -11,35 +11,20 @@
     margin: 0;
     padding: 0;
     font-family: "Roboto", sans-serif;
-    background-color: #f2f2f2;          /* ✅ Grey background */
-    color: #FF0000;                     /* ✅ Service Canada Red */
+    background-color: #f2f2f2;
+    color: #FF0000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    -webkit-overflow-scrolling: touch;
     overflow-y: auto;
   }
 
-header {
-  text-align: center;
-  margin-top: -6px;      /* moves header UP */
-  margin-bottom: 4px;    /* keeps tight spacing above box */
-}
+  header { text-align: center; margin-top: -6px; margin-bottom: 4px; }
 
-  h1 {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0;
-    color: #FF0000;                     /* Title in red */
-  }
-
-  .subtitle {
-    font-size: 16px;
-    color: #0F4079;                     /* ✅ Keep blue for “Write in any language” */
-    margin-top: 5px;
-  }
+  h1 { font-size: 20px; font-weight: 600; margin: 0; color: #FF0000; }
+  .subtitle { font-size: 16px; color: #0F4079; margin-top: 5px; }
 
   .input-box {
     background-color: #fff;
@@ -47,15 +32,12 @@ header {
     border-radius: 12px;
     padding: 16px;
     max-width: 420px;
+    width: 85%;
+    box-shadow: 0 0 8px rgba(255,0,0,0.25);
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
-    width: 85%;           /* ✅ match Dalhousie visual width */
-    margin: 0 auto;
-    margin-left: 0px;    /* ✅ optical left nudge */
-    height: 65vh;         /* ✅ raise total box height */
-    padding-top: 8px;    /* moves textarea + button UP */
+    height: 65vh;
   }
 
   textarea {
@@ -63,11 +45,10 @@ header {
     font-size: 18px;
     border-radius: 8px;
     border: none;
-    outline: none;
     resize: none;
     height: 160px;
     background-color: #f9f9f9;
-    color: #444444;
+    color: #444;
     margin-bottom: 12px;
   }
 
@@ -80,12 +61,9 @@ header {
     padding: 12px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
   }
 
-  button:hover {
-    background-color: #cc0000;
-  }
+  button:hover { background-color: #cc0000; }
 
   #toast {
     visibility: hidden;
@@ -97,137 +75,56 @@ header {
     padding: 12px;
     position: fixed;
     bottom: 30px;
-    z-index: 2;
     left: 50%;
     transform: translateX(-50%);
     font-weight: 600;
   }
 
-  #toast.show {
-    visibility: visible;
-    animation: fadein 0.3s, fadeout 0.3s 2.6s;
-  }
+  #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.6s; }
 
-  @keyframes fadein { from {bottom: 10px; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-  @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 10px; opacity: 0;} }
-
-  .dots span { animation: blink 1.4s infinite both; }
-  .dots span:nth-child(2){ animation-delay:.2s; }
-  .dots span:nth-child(3){ animation-delay:.4s; }
-  @keyframes blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
+  @keyframes fadein { from {opacity: 0;} to {opacity: 1;} }
+  @keyframes fadeout { from {opacity: 1;} to {opacity: 0;} }
 </style>
 </head>
 
 <body>
-  <header>
-    <h1>Service Canada AI Assistant</h1>
-    <div class="subtitle">Write in any language</div>
-  </header>
+<header>
+  <h1>Service Canada AI Assistant</h1>
+  <div class="subtitle">Write in any language</div>
+</header>
 
-  <div class="input-box">
-    <textarea id="inputBox" placeholder="Tap & Type your question, issue or concern here…"></textarea>
-    <button id="submitBtn">Submit</button>
-  </div>
+<div class="input-box">
+  <textarea id="inputBox" placeholder="Tap & Type your question, issue or concern here…"></textarea>
+  <button id="submitBtn">Submit</button>
+</div>
 
-  <div id="toast">✅ Sent</div>
+<div id="toast">Sent</div>
 
-  <script src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"></script>
-  <script>
-
-// -----------------------------------------------------------
-// ABSOLUTE FIX: Reload ONLY when WebView restores from cache
-// -----------------------------------------------------------
-try {
-  const nav = performance.getEntriesByType("navigation")[0];
-  if (nav && nav.type === "back_forward") {
-    window.location.reload();
-  }
-} catch (e) {
-  console.log("navigation detection error:", e);
-}
-    const inputBox = document.getElementById("inputBox");
-    const toast = document.getElementById("toast");
-    const submitBtn = document.getElementById("submitBtn");
-
-    function isBridgeReady() {
-      return typeof window.ThunkableWebviewerExtension !== "undefined";
-    }
-
-    function whenBridgeReady(fn) {
-      if (isBridgeReady()) {
-        fn();
-      } else {
-        document.addEventListener("ThunkableWebviewerExtensionReady", fn, { once: true });
-      }
-    }
-
-    function showToast(text, duration = 2000, asHTML = false) {
-      if (asHTML) toast.innerHTML = text;
-      else toast.textContent = text;
-      toast.className = "show";
-      if (duration < 999999) {
-        setTimeout(() => {
-          toast.className = toast.className.replace("show", "");
-        }, duration);
-      }
-    }
-
-    function sendInput() {
-      const message = inputBox.value.trim();
-      if (!message) {
-        alert("Please enter a question or issue.");
-        return;
-      }
-
-      try {
-        ThunkableWebviewerExtension.postMessage(message);
-      } catch (e) {
-        console.error("Bridge error:", e);
-        alert("Unable to send message back to the app.");
-        return;
-      }
-
-      showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
-    }
-
-    inputBox.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendInput();
-      }
-    });
-
-    submitBtn.addEventListener("click", sendInput);
-    console.log("Bridge script loaded:", isBridgeReady());
-  </script>
-
+<script src="https://thunkable.github.io/webviewer-extension/thunkableWebviewerExtension.js"></script>
 <script>
-/* -------------------------------------------------------
-   INPUT SCREEN — IDENTICAL TO FOLLOW-UP LOGIC
--------------------------------------------------------- */
 
-const inputBox = document.getElementById("inputBox");     // FIXED
-const submitBtn = document.getElementById("submitBtn");   // FIXED
-const toast = document.getElementById("toast");           // FIXED
+// 🔥 Remove: NO “back_forward reload” logic (causes breakage)
 
-/* Notify Thunkable that the WebViewer is ready */
+// DOM handles
+const inputBox = document.getElementById("inputBox");
+const submitBtn = document.getElementById("submitBtn");
+const toast = document.getElementById("toast");
+
+// Notify Thunkable that WebViewer is ready
 document.addEventListener("DOMContentLoaded", () => {
-  try {
-    ThunkableWebviewerExtension.postMessage("ready");
-  } catch (e) {
-    console.log("Ready handshake error:", e);
-  }
+  try { ThunkableWebviewerExtension.postMessage("ready"); }
+  catch (e) { console.log("ready handshake error:", e); }
 });
 
-/* Utility: Show toast */
+// Toast helper
 function showToast(msg) {
   toast.innerHTML = msg;
   toast.className = "show";
 }
 
-/* -------------------------------------------------------
-   SUBMIT QUESTION → BACKEND → SEND ANSWER BACK TO APP
--------------------------------------------------------- */
+// ------------------------------------------------------------
+// SUBMIT → BACKEND → SEND ANSWER TO OUTPUT SCREEN
+// ------------------------------------------------------------
 submitBtn.onclick = async () => {
   const q = inputBox.value.trim();
   if (!q) return;
@@ -244,7 +141,7 @@ submitBtn.onclick = async () => {
 
     const data = await res.json();
 
-    /* Send answer back to Output viewer */
+    // SEND ANSWER BACK TO THE OUTPUT WEBVIEWER
     ThunkableWebviewerExtension.postMessage({
       type: "ANSWER",
       payload: data.answer || "(no response)"
@@ -257,10 +154,10 @@ submitBtn.onclick = async () => {
   submitBtn.disabled = false;
 };
 
-/* -------------------------------------------------------
-   OPTIONAL: respond if Thunkable asks for current question
--------------------------------------------------------- */
-ThunkableWebviewerExtension.receiveMessage(function (msg) {
+// ------------------------------------------------------------
+// OPTIONAL: If Thunkable asks for current question, provide it
+// ------------------------------------------------------------
+ThunkableWebviewerExtension.receiveMessage(msg => {
   if (msg === "request_question") {
     ThunkableWebviewerExtension.postMessage({
       type: "QUESTION",
@@ -268,7 +165,8 @@ ThunkableWebviewerExtension.receiveMessage(function (msg) {
     });
   }
 });
+
 </script>
-  
+
 </body>
 </html>
