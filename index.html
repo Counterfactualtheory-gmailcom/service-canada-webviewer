@@ -84,19 +84,21 @@
       display: none;
     }
 
-    /* 🔹 Follow-up UI */
-    #followup-box {
-      margin-top: 18px;
-      padding: 12px;
-      background: #ffffff;
-      border-radius: 8px;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 6px rgba(255, 0, 0, 0.2);
-    
-    /* --- CENTER INNER BOX + ADD SIDE MARGINS SO IT NEVER TOUCHES FRAME --- */
-    #followup-box {
-    width: calc(100% - 50px);   /* 25px margin on left & right */
-    margin: 0 auto;             /* perfect horizontal centering */
+/* --- Follow-up UI (base styling) --- */
+#followup-box {
+  margin-top: 18px;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.2);
+}
+
+/* --- Center inner box so it never touches the outer red frame --- */
+#followup-box {
+  width: calc(100% - 60px);  /* 30px margin on both sides */
+  margin-left: auto;
+  margin-right: auto;
 }
 
     #followup-text {
