@@ -249,16 +249,17 @@ function safeRender(md){
     a.rel = 'noopener';
   });
 
-  // ✅ Attach WebViewer link handler once
+  // Attach WebViewer link handler once
   if (!linkHandlerAttached) {
-    outEl.addEventListener('click', e => {
-      const a = e.target.closest && e.target.closest('a[href]');
+    outEl.addEventListener("click", e => {
+      const a = e.target.closest && e.target.closest("a[href]");
       if (!a) return;
       const url = a.href;
+
       if (/^https?:/i.test(url)) {
         e.preventDefault();
         try {
-          ThunkableWebviewerExtension.postMessage('OPEN_IN_BROWSER::' + url);
+          ThunkableWebviewerExtension.postMessage("OPEN_IN_BROWSER::" + url);
         } catch (err) {
           window.location.assign(url);
         }
@@ -266,9 +267,17 @@ function safeRender(md){
     });
     linkHandlerAttached = true;
   }
-}
-    let firstMessageReceived=false;let readyPingerId=null;
 
+  /* -----------------------------------------------------
+     CRITICAL FIX
+     Fire ANSWER_RENDERED so auto-return handshake runs
+  ------------------------------------------------------ */
+  document.dispatchEvent(new Event("ANSWER_RENDERED"));
+}  // ← THIS closes safeRender() — MUST remain here
+
+let firstMessageReceived = false;
+let readyPingerId = null;
+    
 // ✅ FIX: Align Service Canada render timing with McGill/DAL (prevents tag bleed)
 ThunkableWebviewerExtension.receiveMessage(function (msg) {
   try {
@@ -363,19 +372,29 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 
 <script>
 /* -------------------------------------------------------
-   AUTO-RETURN — CORRECT URL + CORRECT LOGIC
+   AUTO-RETURN — FIXED FOR SERVICE CANADA DELAY
+   • 10-second test timeout
+   • Waits for safeRender + the 50ms delay
+   • Guaranteed ANSWER_RENDERED fire
 -------------------------------------------------------- */
+
 const RETURN_DELAY = 10 * 1000; // 10 seconds for testing
 let returnTimer = null;
 let handshakeDone = false;
 
-/* Called only after safeRender() fires ANSWER_RENDERED */
+/* SafeRender DELAY FIX:
+   Service Canada uses a 50ms delayed safeRender.
+   We must listen for BOTH:
+   1. ANSWER_RENDERED (manual dispatch)
+   2. Any post-render DOM change event as fallback
+*/
 function enableAutoReturnTimer() {
+  if (handshakeDone) return;   // prevent double-start
   handshakeDone = true;
   resetReturnTimer();
 }
 
-/* Redirect safely to the CONFIRMED input URL */
+/* Correct input URL */
 function goToInput() {
   window.location.replace(
     "https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html"
@@ -389,13 +408,21 @@ function resetReturnTimer() {
   returnTimer = setTimeout(goToInput, RETURN_DELAY);
 }
 
-/* User activity cancels countdown */
-["touchstart", "click", "scroll", "keydown"].forEach(evt => {
+/* Activity cancels timeout */
+["touchstart","click","scroll","keydown"].forEach(evt => {
   document.addEventListener(evt, resetReturnTimer, { passive: true });
 });
 
-/* safeRender → ANSWER_RENDERED → start the timer */
+/* Primary trigger */
 document.addEventListener("ANSWER_RENDERED", enableAutoReturnTimer);
+
+/* Fallback trigger:
+   SC safeRender uses setTimeout → ANSWER_RENDERED may miss
+   MutationObserver guarantees handshake even if event is late
+*/
+new MutationObserver(() => {
+  if (!handshakeDone) enableAutoReturnTimer();
+}).observe(document.getElementById("out"), { childList: true });
 </script>
   
 </body>
