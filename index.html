@@ -365,7 +365,7 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 function sendReturnSignal() {
   try {
     console.log("🔥 OUTPUT TIMER FIRED – sending MESSAGE");
-    ThunkableWebviewerExtension.postMessage("SERVICECANADA_RETURN_TO_INPUT");
+    ThunkableWebviewerExtension.postMessage("servicecanada_return_to_input");
     console.log("📤 SENT: SERVICECANADA_RETURN_TO_INPUT");
   } catch (e) {
     console.log("❌ Bridge error:", e);
