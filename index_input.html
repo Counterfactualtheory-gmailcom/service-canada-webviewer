@@ -168,6 +168,9 @@ ThunkableWebviewerExtension.postMessage({
   payload: data.answer || "(no response)"
 });
 
+// 🔥 Tell Thunkable to navigate to the OUTPUT screen
+ThunkableWebviewerExtension.postMessage("request_question");
+
   } catch (err) {
     showToast("⚠️ Error: " + err.message);
   }
