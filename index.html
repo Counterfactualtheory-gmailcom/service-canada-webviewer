@@ -364,22 +364,17 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 
 <script>
 /* ---------------------------------------------------
-   AUTO RETURN TO INPUT SCREEN AFTER 1 MINUTE
-   (Uses YOUR REAL Thunkable handler)
+   AUTO RETURN AFTER 1 MINUTE — MESSAGE ONLY
+   (Uses Thunkable’s built-in screen navigation)
 ---------------------------------------------------- */
 
 const RETURN_DELAY = 60 * 1000; // 1 minute
 
 setTimeout(() => {
   try {
-    // ⭐ THIS is the message your Thunkable blocks ACTUALLY listen to
-    ThunkableWebviewerExtension.postMessage(
-      "RETURN_TO_INPUT_NOW::https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html"
-    );
+    ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT_NOW");
   } catch (e) {
-    // Fallback (rarely works, but harmless)
-    window.location.href =
-      "https://counterfactualtheory-gmailcom.github.io/service-canada-webviewer/index_input.html";
+    console.log("Fallback navigation failed:", e);
   }
 }, RETURN_DELAY);
 </script>
