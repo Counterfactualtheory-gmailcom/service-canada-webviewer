@@ -188,5 +188,23 @@ header {
     submitBtn.addEventListener("click", sendInput);
     console.log("Bridge script loaded:", isBridgeReady());
   </script>
+
+<script>
+/* ---------------------------------------------------
+   LISTEN FOR AUTO-RETURN SIGNAL FROM OUTPUT SCREEN
+   AND FORCE A FULL PAGE RELOAD TO RESTORE WEBVIEW JS
+---------------------------------------------------- */
+try {
+  ThunkableWebviewerExtension.receiveMessage(function (msg) {
+    if (typeof msg === "string" && msg.startsWith("RETURN_TO_INPUT_NOW::")) {
+      window.location.reload(true);   // 🔥 Hard reload = relaunch all input logic
+    }
+  });
+} catch (e) {
+  // If the bridge is frozen, do a fallback full reload anyway
+  window.location.reload(true);
+}
+</script>
+  
 </body>
 </html>
