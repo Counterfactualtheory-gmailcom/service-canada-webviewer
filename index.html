@@ -112,12 +112,12 @@
   margin-right: 30px;            /* keep right margin unchanged */
 }
 
-/* --- Larger textarea --- */
+/* --- Larger textarea (cleanest, safest) --- */
 #followup-text {
-  width: 100%;
-  min-height: 170px;   /* increased height */
-  padding: 10px;
-  font-size: 15px;
+  width: 100%;                /* fills followup-box width */
+  min-height: 170px;
+  padding: 14px;              /* ← increased from 10px */
+  font-size: 16px;            /* ← slightly larger */
   border-radius: 6px;
   border: 1px solid #ccc;
   outline: none;
@@ -127,7 +127,7 @@
   background-color: #f9f9f9;
   color: #000;
 }
-
+    
 #followup-btn, #copy-btn {
     margin-top: 8px;
     width: 100%;
