@@ -250,6 +250,13 @@ function safeRender(md){
   outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
   lastAnswer = outEl.innerText;
 
+  // 🔥 Save the new output permanently
+try {
+  localStorage.setItem("last_answer_html", outEl.innerHTML);
+} catch (e) {
+  console.log("localStorage save error:", e);
+}
+
   // ✅ Normalize all links
   outEl.querySelectorAll('a').forEach(a => {
     a.target = '_blank';
