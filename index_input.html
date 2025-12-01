@@ -191,18 +191,18 @@ header {
 
 <script>
 /* ---------------------------------------------------
-   AUTO RETURN TO INPUT SCREEN AFTER 1 MINUTE
-   ✔ Uses the same message the input screen listens for
-   ✔ Matches yesterday’s working flow
+   LISTEN FOR AUTO-RETURN SIGNAL FROM OUTPUT SCREEN
+   AND FORCE A FULL PAGE RELOAD (revives WebView JS)
 ---------------------------------------------------- */
-
-setTimeout(() => {
-  try {
-    ThunkableWebviewerExtension.postMessage("RETURN_TO_INPUT_NOW");
-  } catch (e) {
-    console.log("Navigation failed:", e);
-  }
-}, 60000);  // 1 minute
+try {
+  ThunkableWebviewerExtension.receiveMessage(function (msg) {
+    if (msg === "RETURN_TO_INPUT_NOW") {
+      window.location.reload();   // 🔥 Hard reload resets all logic
+    }
+  });
+} catch (e) {
+  window.location.reload();
+}
 </script>
   
 </body>
