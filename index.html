@@ -109,19 +109,21 @@
       color: #000;
     }
 
-    #followup-btn, #copy-btn {
-      margin-top: 8px;
-      width: 100%;
-      padding: 10px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-      font-size: 17px;   /* ← increased font size */
-      left: -3px;        /* ← slight left shift */
-    }
+#followup-btn, #copy-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 10px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+    font-size: 17px;
+    position: relative;    /* ensure no floating */
+    left: 0;               /* FIX: reset accidental shifting */
+    margin-left: 0;        /* FIX: ensure full centering */
+}
 
     #copy-btn {
       background: #0f4079;  /* ✅ Blue for bilingual “Write in any language” continuity */
