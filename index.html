@@ -93,23 +93,17 @@
       display: none;
     }
 
-/* --- Follow-up UI shifted left & centered exactly like McGill --- */
+/* --- Follow-up UI (perfect centering — same as McGill) --- */
 #followup-box {
-  width: calc(100% - 60px);    /* same exact width as #out */
-  margin-left: -6px;           /* ← same micro left shift */
+  width: calc(100% - 60px);
+  margin-left: 30px;       /* PERFECT CENTERING */
   margin-right: 30px;
   padding: 12px;
   background: #ffffff;
   border-radius: 8px;
   border: 2px solid var(--accent);
   box-shadow: 0 0 6px rgba(255, 0, 0, 0.2);
-}
-
-/* --- Center inner box so it never touches the outer red frame --- */
-#followup-box {
-  width: calc(100% - 60px);   /* same width */
-  margin-left: calc(30px - 6px);  /* shift left by 6px */
-  margin-right: 30px;            /* keep right margin unchanged */
+  box-sizing: border-box;
 }
 
 /* --- Larger textarea (cleanest, safest) --- */
