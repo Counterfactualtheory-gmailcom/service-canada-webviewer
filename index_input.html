@@ -153,11 +153,14 @@ submitBtn.onclick = async () => {
 
     const data = await res.json();
 
-    // SEND ANSWER BACK TO THE OUTPUT WEBVIEWER
-    ThunkableWebviewerExtension.postMessage({
-      type: "ANSWER",
-      payload: data.answer || "(no response)"
-    });
+// 🔥 FIRST: instruct Thunkable to switch screens
+ThunkableWebviewerExtension.postMessage("go_output");
+
+// 🔥 SECOND: send the answer to the output screen
+ThunkableWebviewerExtension.postMessage({
+  type: "ANSWER",
+  payload: data.answer || "(no response)"
+});
 
   } catch (err) {
     showToast("⚠️ Error: " + err.message);
