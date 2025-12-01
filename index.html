@@ -366,8 +366,8 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 setTimeout(() => {
   console.log("🔥 OUTPUT TIMER FIRED");
   try {
-    ThunkableWebviewerExtension.postMessage("BACK_TO_INPUT");
-    console.log("📤 MESSAGE SENT: BACK_TO_INPUT");
+    ThunkableWebviewerExtension.postMessage("SERVICE-CANADA_RETURN_TO_INPUT");
+    console.log("📤 MESSAGE SENT: SERVICE-CANADA_RETURN_TO_INPUT");
   } catch (e) {
     console.log("❌ ERROR SENDING MESSAGE:", e);
   }
