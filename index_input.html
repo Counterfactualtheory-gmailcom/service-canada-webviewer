@@ -194,7 +194,7 @@ try {
   ThunkableWebviewerExtension.receiveMessage(function (msg) {
     console.log("📩 INPUT RECEIVED MESSAGE:", msg);
 
-    if (msg === "SERVICECANADA_RETURN_TO_INPUT") {
+      if (msg === "servicecanada_return_to_input") {
       console.log("🔄 RELOADING INPUT SCREEN NOW");
       window.location.reload();
       return;
