@@ -190,20 +190,28 @@ header {
   </script>
 
 <script>
-try {
-  ThunkableWebviewerExtension.receiveMessage(function (msg) {
-    console.log("📩 INPUT RECEIVED MESSAGE:", msg);
+/* -------------------------------------------------------
+   SAFE INPUT LISTENER
+   • never reloads the page
+   • does not interfere with auto-return
+   • does not fire before bridge is ready
+-------------------------------------------------------- */
 
+document.addEventListener("ThunkableWebviewerExtensionReady", () => {
+  try {
+    ThunkableWebviewerExtension.receiveMessage(function (msg) {
+      console.log("📩 INPUT RECEIVED MESSAGE:", msg);
+
+      // keep this if you still need the command
       if (msg === "servicecanada_return_to_input") {
-      console.log("🔄 RELOADING INPUT SCREEN NOW");
-      window.location.reload();
-      return;
-    }
-  });
-} catch (e) {
-  console.log("❌ INPUT LISTENER ERROR:", e);
-  window.location.reload();
-}
+        console.log("🔄 Already on input screen — no action needed");
+      }
+    });
+  } catch (e) {
+    console.log("❌ INPUT LISTENER ERROR:", e);
+    // IMPORTANT: DO NOT reload here
+  }
+});
 </script>
   
 </body>
