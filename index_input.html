@@ -191,25 +191,22 @@ header {
 
 <script>
 /* ---------------------------------------------------
-   UNIFIED MESSAGE HANDLER
-   ✔ Handles auto-return from output screen
-   ✔ Handles any other incoming messages
-   ✔ Prevents listener overwriting (the root cause)
+   LISTEN FOR AUTO-RETURN SIGNAL FROM OUTPUT SCREEN
+   ✔ Message name MATCHES the sender
+   ✔ Hard reload revives dead WebView JS
 ---------------------------------------------------- */
-
 try {
   ThunkableWebviewerExtension.receiveMessage(function (msg) {
+    console.log("📩 INPUT RECEIVED MESSAGE:", msg);
 
-    // 1️⃣ AUTO-RETURN FROM OUTPUT SCREEN
-    if (msg === "RETURN_TO_INPUT_NOW") {
-      window.location.reload();   // 🔥 resets WebView JS fully
+    if (msg === "SERVICE-CANADA_RETURN_TO_INPUT") {
+      console.log("🔄 RELOADING INPUT SCREEN NOW");
+      window.location.reload();   // revive webview
       return;
     }
-
-    // 2️⃣ (Future-proof) — handle any other messages
-    console.log("Received message in INPUT screen:", msg);
   });
 } catch (e) {
+  console.log("❌ INPUT LISTENER ERROR:", e);
   window.location.reload();
 }
 </script>
