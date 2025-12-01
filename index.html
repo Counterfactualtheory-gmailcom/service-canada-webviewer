@@ -281,27 +281,26 @@ let readyPingerId = null;
 // ✅ FIX: Align Service Canada render timing with McGill/DAL (prevents tag bleed)
 ThunkableWebviewerExtension.receiveMessage(function (msg) {
   try {
+    // Ignore anything that isn't an ANSWER
+    if (!msg || typeof msg !== "object" || msg.type !== "ANSWER") {
+      return;
+    }
+
     firstMessageReceived = true;
     if (readyPingerId) {
       clearInterval(readyPingerId);
       readyPingerId = null;
     }
 
-    // ⏳ Add brief delay so DOM & libraries are ready before cleaning
     setTimeout(() => {
-      const payload =
-        msg && typeof msg === "object" && "payload" in msg
-          ? msg.payload
-          : msg;
-      safeRender(payload);
-    }, 50); // 50 ms ≈ McGill’s natural “Answer coming…” delay
+      safeRender(msg.payload || "");
+    }, 50);
 
   } catch (err) {
     outEl.textContent = "Render error:" + err;
     debug("Render error:" + (err && err.stack || err));
   }
 });
-
     function pingReady(){
       try{ThunkableWebviewerExtension.postMessage('ready');}
       catch(e){debug('postMessage error:'+e);}
