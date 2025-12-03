@@ -229,6 +229,7 @@ function safeRender(md){
   if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
   outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
   lastAnswer = outEl.innerText;
+  window.lastAnswerBackup = outEl.innerHTML;   // <-- ADD THIS LINE
 
   // ✅ Normalize all links
   outEl.querySelectorAll('a').forEach(a => {
