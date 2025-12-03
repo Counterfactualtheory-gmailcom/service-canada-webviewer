@@ -371,13 +371,22 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       }
   });
 
-  // Every time we render an answer, store a hard backup
-  const originalSafeRender = safeRender;
-  safeRender = function(md) {
-      originalSafeRender(md);
-      const out = document.getElementById("out");
-      if (out) window.lastAnswerBackup = out.innerHTML;
-  };
+// Every time we render an answer, store ONLY the last answer as backup
+const originalSafeRender = safeRender;
+safeRender = function(md) {
+    const result = originalSafeRender(md);  // renders everything normally
+
+    const out = document.getElementById("out");
+
+    // Extract ONLY the newest answer (HTML)
+    const segments = out.innerHTML.split("<hr>");
+    const lastSegment = segments[segments.length - 1].trim();
+
+    // Save the newest answer for copying and restore-on-minimize
+    window.lastAnswerBackup = lastSegment;
+
+    return result;
+};
 </script>
   
 </body>
