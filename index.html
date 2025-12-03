@@ -232,7 +232,7 @@ outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
 // ❌ IMPORTANT: do NOT store answer here anymore
 // Backup is handled by the override block at the bottom
 // Store ONLY the most recent clean HTML answer
-window.lastAnswerBackup = clean2;
+out.innerHTML = window.lastAnswerBackup;
 
   // ✅ Normalize all links
   outEl.querySelectorAll('a').forEach(a => {
