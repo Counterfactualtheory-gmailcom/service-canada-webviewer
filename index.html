@@ -223,12 +223,14 @@ function safeRender(md){
     debug('linkify error:' + e);
   }
 
-  const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target','rel'] });
+const clean2 = DOMPurify.sanitize(linked, { ADD_ATTR: ['target','rel'] });
 
 // Append into the output box
 if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
 outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
 
+// ❌ IMPORTANT: do NOT store answer here anymore
+// Backup is handled by the override block at the bottom
 // Store ONLY the most recent clean HTML answer
 window.lastCleanAnswer = clean2;
 
@@ -372,19 +374,29 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       }
   });
 
-// Every time we render an answer, store ONLY the last answer as backup
+// Every time we render an answer, store ONLY the last *real* answer (not the footer)
 const originalSafeRender = safeRender;
 safeRender = function(md) {
-    const result = originalSafeRender(md);  // renders everything normally
+    const result = originalSafeRender(md);  // Render normally first
 
     const out = document.getElementById("out");
+    if (!out) return result;
 
-    // Extract ONLY the newest answer (HTML)
-    const segments = out.innerHTML.split("<hr>");
-    const lastSegment = segments[segments.length - 1].trim();
+    // Split all <hr> segments into clean blocks
+    const segments = out.innerHTML.split("<hr>").map(s => s.trim());
 
-    // Save the newest answer for copying and restore-on-minimize
-    window.lastAnswerBackup = lastSegment;
+    let realAnswer = "";
+
+    if (segments.length >= 2) {
+        // If footer is present, the REAL answer is second-last
+        realAnswer = segments[segments.length - 2];
+    } else {
+        // Only one answer (no footer yet)
+        realAnswer = segments[0];
+    }
+
+    // Save the newest real answer for copying & restore-on-minimize
+    window.lastAnswerBackup = realAnswer;
 
     return result;
 };
