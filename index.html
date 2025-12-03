@@ -373,33 +373,6 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
           });
       }
   });
-
-// Every time we render an answer, store ONLY the last *real* answer (not the footer)
-const originalSafeRender = safeRender;
-safeRender = function(md) {
-    const result = originalSafeRender(md);  // Render normally first
-
-    const out = document.getElementById("out");
-    if (!out) return result;
-
-    // Split all <hr> segments into clean blocks
-    const segments = out.innerHTML.split("<hr>").map(s => s.trim());
-
-    let realAnswer = "";
-
-    if (segments.length >= 2) {
-        // If footer is present, the REAL answer is second-last
-        realAnswer = segments[segments.length - 2];
-    } else {
-        // Only one answer (no footer yet)
-        realAnswer = segments[0];
-    }
-
-    // Save the newest real answer for copying & restore-on-minimize
-    window.lastAnswerBackup = realAnswer;
-
-    return result;
-};
 </script>
   
 </body>
