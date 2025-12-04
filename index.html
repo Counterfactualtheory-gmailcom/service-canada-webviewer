@@ -345,7 +345,10 @@ copyBtn.onclick = () => {
 const res = await fetch('https://servicecanbackendproduction-production.up.railway.app/ask', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ question: q })
+  body: JSON.stringify({
+    question: q,
+    previousAnswer: window.lastAnswerBackup || ""
+  })
 });
         const data = await res.json();
         safeRender(data.answer || '(no response)');
