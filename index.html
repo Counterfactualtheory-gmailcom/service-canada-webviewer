@@ -347,7 +347,7 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     question: q,
-    previousAnswer: window.lastAnswerBackup || ""
+    previousQuestion: window.lastAnswerBackup || ""
   })
 });
         const data = await res.json();
