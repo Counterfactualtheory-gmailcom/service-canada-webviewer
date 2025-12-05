@@ -236,6 +236,22 @@ outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
 // Store ONLY the most recent clean HTML answer
 window.lastAnswerBackup = clean2;
 
+  /* -----------------------------------------------------------
+     DAL–McGill DOM REFRESH BLOCK — triggers reflow & wake-up
+  ----------------------------------------------------------- */
+  function removeEmptyBullets() {
+    const lists = document.querySelectorAll("ul, ol");
+    lists.forEach(list => {
+      const items = list.querySelectorAll("li");
+      items.forEach(li => {
+        if (!li.textContent.trim()) li.remove();
+      });
+      if (!list.textContent.trim()) list.remove();
+    });
+  }
+  removeEmptyBullets();
+  /* ----------------------------------------------------------- */
+  
   // ✅ Normalize all links
   outEl.querySelectorAll('a').forEach(a => {
     a.target = '_blank';
