@@ -174,7 +174,9 @@ header {
         alert("Unable to send message back to the app.");
         return;
       }
-
+// 🔥 DAL behaviour replicated here — keep the text visible
+inputBox.value = message;
+      
       showToast("💬 Answer Coming<span class='dots'><span>.</span><span>.</span><span>.</span></span>", 999999, true);
       inputBox.value = "";
     }
