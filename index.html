@@ -401,21 +401,43 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <script>
   // Prevent blank screen after app is minimized / dormant
   document.addEventListener("visibilitychange", () => {
+
       // When returning from background
       if (!document.hidden) {
-          // Force DOM repaint and WebView rehydrate
           requestAnimationFrame(() => {
               const out = document.getElementById("out");
+
               if (out && out.innerHTML.trim() === "") {
-                  // If WebView purged content, reload last known answer
-                  if (window.lastAnswerBackup) {
-                      out.innerHTML = window.lastAnswerBackup;
+
+                  // Step 1 — Try volatile JS memory
+                  let restored = window.lastAnswerBackup;
+
+                  // Step 2 — Try sessionStorage if JS globals were purged
+                  if (!restored) {
+                      try { restored = sessionStorage.getItem("lastAnswerBackup"); } catch {}
                   }
+
+                  // Step 3 — Try localStorage as deeper persistence
+                  if (!restored) {
+                      try { restored = localStorage.getItem("lastAnswerBackup"); } catch {}
+                  }
+
+                  // Step 4A — If anything was restored, rehydrate the answer
+                  if (restored) {
+                      out.innerHTML = restored;
+                  }
+
+                  // Step 4B — If nothing found, do NOTHING
+                  // → This allows the existing natural "auto-return to input screen"
+                  //    behaviour to happen under full-purge cases.
               }
           });
       }
   });
 </script>
+
+</body>
+</html>
   
 </body>
 </html>
