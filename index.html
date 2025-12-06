@@ -399,57 +399,58 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-  // STRONG MODE — Always avoid blank screens.
-  // Restore if possible; otherwise auto-return to input screen.
+  /* -----------------------------------------------------------
+     STRONG MODE SAFETY PATCH — Service Canada
+     Prevents permanent blank screens after long idle / purge.
+     Behavior:
+       • If answer can be recovered → restore it
+       • If not → auto-return to input screen
+  ------------------------------------------------------------ */
 
   document.addEventListener("visibilitychange", () => {
 
-      // Only act when returning from background
+      // Only run when app RETURNS to foreground
       if (!document.hidden) {
 
           requestAnimationFrame(() => {
               const out = document.getElementById("out");
               if (!out) return;
 
-              // Check if the screen is blank (purged DOM)
+              // Detect fully blank, purged screen
               const isBlank = (out.innerHTML.trim() === "");
 
               if (!isBlank) {
-                  return; // Nothing to fix
+                  // Content is present → nothing to fix
+                  return;
               }
 
-              // --- STEP 1: Attempt restore from volatile JS memory ---
+              // Attempt to recover the last answer
               let restored = window.lastAnswerBackup;
 
-              // --- STEP 2: Attempt restore from sessionStorage ---
               if (!restored) {
                   try { restored = sessionStorage.getItem("lastAnswerBackup"); } catch {}
               }
 
-              // --- STEP 3: Attempt restore from localStorage ---
               if (!restored) {
                   try { restored = localStorage.getItem("lastAnswerBackup"); } catch {}
               }
 
-              // --- STEP 4: Restore OR auto-return ---
-
+              // Restore if found
               if (restored) {
-                  // We recovered an answer → put it back into the DOM
                   out.innerHTML = restored;
-              } else {
-                  // Nothing available → STRONG MODE enables immediate return
-                  try {
-                      window.location.replace("index_input.html");
-                  } catch (e) {
-                      // Fallback if replace fails
-                      window.location.href = "index_input.html";
-                  }
+                  return;
+              }
+
+              // If nothing can be restored → AUTO RETURN to input screen
+              try {
+                  window.location.replace("index_input.html");
+              } catch (e) {
+                  window.location.href = "index_input.html";
               }
 
           });
       }
   });
 </script>
-
 </body>
 </html>
