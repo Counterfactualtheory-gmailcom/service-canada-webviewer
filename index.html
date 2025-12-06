@@ -399,38 +399,53 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-  // Prevent blank screen after app is minimized / dormant
+  // STRONG MODE — Always avoid blank screens.
+  // Restore if possible; otherwise auto-return to input screen.
+
   document.addEventListener("visibilitychange", () => {
 
-      // When returning from background
+      // Only act when returning from background
       if (!document.hidden) {
+
           requestAnimationFrame(() => {
               const out = document.getElementById("out");
+              if (!out) return;
 
-              if (out && out.innerHTML.trim() === "") {
+              // Check if the screen is blank (purged DOM)
+              const isBlank = (out.innerHTML.trim() === "");
 
-                  // Step 1 — Try volatile JS memory
-                  let restored = window.lastAnswerBackup;
-
-                  // Step 2 — Try sessionStorage if JS globals were purged
-                  if (!restored) {
-                      try { restored = sessionStorage.getItem("lastAnswerBackup"); } catch {}
-                  }
-
-                  // Step 3 — Try localStorage as deeper persistence
-                  if (!restored) {
-                      try { restored = localStorage.getItem("lastAnswerBackup"); } catch {}
-                  }
-
-                  // Step 4A — If anything was restored, rehydrate the answer
-                  if (restored) {
-                      out.innerHTML = restored;
-                  }
-
-                  // Step 4B — If nothing found, do NOTHING
-                  // → This allows the existing natural "auto-return to input screen"
-                  //    behaviour to happen under full-purge cases.
+              if (!isBlank) {
+                  return; // Nothing to fix
               }
+
+              // --- STEP 1: Attempt restore from volatile JS memory ---
+              let restored = window.lastAnswerBackup;
+
+              // --- STEP 2: Attempt restore from sessionStorage ---
+              if (!restored) {
+                  try { restored = sessionStorage.getItem("lastAnswerBackup"); } catch {}
+              }
+
+              // --- STEP 3: Attempt restore from localStorage ---
+              if (!restored) {
+                  try { restored = localStorage.getItem("lastAnswerBackup"); } catch {}
+              }
+
+              // --- STEP 4: Restore OR auto-return ---
+
+              if (restored) {
+                  // We recovered an answer → put it back into the DOM
+                  out.innerHTML = restored;
+              } else {
+                  // Nothing available → STRONG MODE enables immediate return
+                  try {
+                      window.location.replace("index_input.html");
+                  } catch (e) {
+                      // Fallback if replace fails
+                      window.location.href = "index_input.html";
+                  }
+              }
+
           });
       }
   });
