@@ -399,58 +399,54 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
   </script>
 
 <script>
-  /* -----------------------------------------------------------
-     STRONG MODE SAFETY PATCH — Service Canada
-     Prevents permanent blank screens after long idle / purge.
-     Behavior:
-       • If answer can be recovered → restore it
-       • If not → auto-return to input screen
-  ------------------------------------------------------------ */
+/* ============================================================
+   UNIVERSAL PURGE-COLLAPSE PATCH (McGill Behavior Replication)
+   Only activates when #out is TRULY EMPTY after minimize.
+   Never triggers under any other condition.
+============================================================ */
 
-  document.addEventListener("visibilitychange", () => {
+document.addEventListener("visibilitychange", () => {
+    // Only run when returning to foreground
+    if (document.hidden) return;
 
-      // Only run when app RETURNS to foreground
-      if (!document.hidden) {
+    requestAnimationFrame(() => {
+        const out = document.getElementById("out");
+        if (!out) return;
 
-          requestAnimationFrame(() => {
-              const out = document.getElementById("out");
-              if (!out) return;
+        // Normal case → content still present
+        if (out.innerHTML.trim() !== "") return;
 
-              // Detect fully blank, purged screen
-              const isBlank = (out.innerHTML.trim() === "");
+        // ⭐ TRUE PURGE DETECTED — collapse the box like McGill
+        out.style.minHeight = "0px";
+        out.style.padding = "0px";
+        out.style.border = "none";
+        out.style.boxShadow = "none";
 
-              if (!isBlank) {
-                  // Content is present → nothing to fix
-                  return;
-              }
+        // Try to restore the last answer
+        let restored = window.lastAnswerBackup;
 
-              // Attempt to recover the last answer
-              let restored = window.lastAnswerBackup;
+        if (!restored) {
+            try { restored = sessionStorage.getItem("lastAnswerBackup"); } catch {}
+        }
+        if (!restored) {
+            try { restored = localStorage.getItem("lastAnswerBackup"); } catch {}
+        }
 
-              if (!restored) {
-                  try { restored = sessionStorage.getItem("lastAnswerBackup"); } catch {}
-              }
+        if (restored) {
+            // Restore and undo collapse formatting
+            out.innerHTML = restored;
+            out.style.removeProperty("min-height");
+            out.style.removeProperty("padding");
+            out.style.removeProperty("border");
+            out.style.removeProperty("box-shadow");
+            return;
+        }
 
-              if (!restored) {
-                  try { restored = localStorage.getItem("lastAnswerBackup"); } catch {}
-              }
-
-              // Restore if found
-              if (restored) {
-                  out.innerHTML = restored;
-                  return;
-              }
-
-              // If nothing can be restored → AUTO RETURN to input screen
-              try {
-                  window.location.replace("index_input.html");
-              } catch (e) {
-                  window.location.href = "index_input.html";
-              }
-
-          });
-      }
-  });
+        // ⭐ No restorable answer → collapsed box persists
+        // Thunkable interprets this as an "empty output screen" and returns to input.
+    });
+});
 </script>
+  
 </body>
 </html>
