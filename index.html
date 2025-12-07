@@ -376,6 +376,22 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
 
+/* === VISUAL PURGE → RETURN TO INPUT SCREEN === */
+function isVisuallyBlank(el) {
+  if (!el) return true;
+
+  const noText = el.textContent.trim() === "";
+
+  const rect = el.getBoundingClientRect();
+  const collapsed = rect.height < 40;
+
+  const noVisibleChildren = [...el.querySelectorAll("*")].every(
+    n => n.textContent.trim() === ""
+  );
+
+  return noText && (collapsed || noVisibleChildren);
+}
+
 /* === UNIVERSAL PURGE → RETURN TO INPUT SCREEN === */
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
@@ -383,17 +399,17 @@ document.addEventListener("visibilitychange", () => {
   const out = document.getElementById("out");
   if (!out) return;
 
-  // TRUE iOS purge → #out is empty
-  if (out.innerHTML.trim() === "") {
+  // NEW iOS-safe detector
+  if (isVisuallyBlank(out)) {
     try {
       ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
     } catch (e) {
-      const url = window.location.href.replace("index.html","") + "index_input.html";
+      const url =
+        window.location.href.replace("index.html", "") + "index_input.html";
       window.location.replace(url);
     }
   }
 });
-
   </script>
   
 </body>
