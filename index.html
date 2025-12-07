@@ -376,26 +376,6 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
 
-    /* -------------------------------------------------------
-       HEARTBEAT KEEP-ALIVE (Local Only - No Backend Calls)
-       Sends a tiny ping every 2 minutes to keep WebView alive.
-    -------------------------------------------------------- */
-
-    setInterval(() => {
-      try {
-        ThunkableWebviewerExtension.postMessage("PING_KEEPALIVE");
-      } catch (e) {
-        console.log("Ping failed:", e);
-      }
-    }, 120000); // 120,000 ms = 2 minutes
-
-    // Optional: ignore pings if received
-    ThunkableWebviewerExtension.receiveMessage(function(msg) {
-      if (msg === "PING_KEEPALIVE") {
-        return; // do nothing — keeps WebView awake
-      }
-    });
-    
   </script>
   
 </body>
