@@ -381,22 +381,19 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
        If #out is blank after returning from background,
        navigate back to input screen (same behavior as 2× swipe-right).
     ========================================================== */
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) return;
+window.addEventListener("pageshow", () => {
+  const out = document.getElementById("out");
+  if (!out) return;
 
-      const out = document.getElementById("out");
-      if (!out) return;
-
-      // ⭐ TRUE PURGE DETECTED  
-      if (out.innerHTML.trim() === "") {
-        try {
-          ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
-        } catch (e) {
-          const url = window.location.href.replace("index.html", "") + "index_input.html";
-          window.location.replace(url);
-        }
-      }
-    });
+  if (out.innerHTML.trim() === "") {
+    try {
+      ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
+    } catch (e) {
+      const url = window.location.href.replace("index.html", "") + "index_input.html";
+      window.location.replace(url);
+    }
+  }
+});
 
   </script>
   
