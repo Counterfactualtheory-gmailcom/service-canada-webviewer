@@ -377,23 +377,24 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
     };
 
 /* === FINAL PURGE DETECTOR — RETURN TO INPUT SCREEN === */
-
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
 
-  const out = document.getElementById("out");
-  if (!out) return;
+  requestAnimationFrame(() => {
+    const out = document.getElementById("out");
+    if (!out) return;
 
-  // iOS purge leaves the border + header, but erases ONLY the innerHTML
-  if (out.innerHTML.trim() === "") {
-    try {
-      ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
-    } catch (e) {
-      const url =
-        window.location.href.replace("index.html", "") + "index_input.html";
-      window.location.replace(url);
+    if (out.innerHTML.trim() === "") {
+      try {
+        ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
+        return;
+      } catch (e) {}
+
+      let base = window.location.href;
+      base = base.substring(0, base.lastIndexOf("/") + 1);
+      window.location.replace(base + "index_input.html");
     }
-  }
+  });
 });
   </script>
   
