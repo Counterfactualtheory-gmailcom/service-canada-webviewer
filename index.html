@@ -376,7 +376,7 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
 
-/* === UNIVERSAL RENDER-BLANK FIX — WORKS WHEN DOM IS INTACT BUT INVISIBLE === */
+/* === FINAL PURGE / BLANK-SCREEN FIX === */
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
 
@@ -384,13 +384,17 @@ document.addEventListener("visibilitychange", () => {
     const out = document.getElementById("out");
     if (!out) return;
 
+    // Only trigger recovery if an answer was previously displayed
+    if (!window.lastAnswerBackup) return;
+
     const rect = out.getBoundingClientRect();
     const visuallyBlank =
-      rect.height < 60 ||     // collapsed content box
-      out.offsetHeight === 0; // WKWebView failed to paint
+      rect.height < 60 ||      // collapsed container (iOS purge)
+      out.offsetHeight === 0 || // WKWebView failed to paint
+      out.innerHTML.trim() === ""; // content wiped
 
     if (visuallyBlank) {
-      // force WebView re-render by reloading same file
+      // Reload current page to restore UI and allow input
       window.location.replace(window.location.href);
     }
   });
