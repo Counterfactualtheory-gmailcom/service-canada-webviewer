@@ -379,21 +379,21 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 <!-- === RETURN TO INPUT SCREEN ON PURGE (NO RELOAD, NO API CALL) === -->
 <script>
 document.addEventListener("visibilitychange", () => {
-  // Trigger only when app resumes from background
   if (!document.hidden) {
-    try {
-      // Ask Thunkable to switch screens immediately
-      ThunkableWebviewerExtension.postMessage("GO_TO_INPUT");
-    } catch (e) {
-      console.log("Bridge not ready, doing DOM fallback");
 
-      // Fallback: erase output so blank screen auto-shows input screen
-      const out = document.getElementById("out");
-      if (out) out.innerHTML = "";
+    // ⭐ Set the flag inside Thunkable via postMessage BEFORE bridge dies
+    try {
+      ThunkableWebviewerExtension.postMessage("SET_RETURN_FLAG");
+    } catch (e) {
+      console.log("Bridge not available — fallback still works");
     }
+
+    // Optional: clear the purged HTML so Thunkable sees blank screen
+    const out = document.getElementById("out");
+    if (out) out.innerHTML = "";
   }
 });
-  </script>
+</script>
   
 </body>
 </html>
