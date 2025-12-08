@@ -376,31 +376,16 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
 
-/* === VISUAL PURGE → RETURN TO INPUT SCREEN === */
-function isVisuallyBlank(el) {
-  if (!el) return true;
+/* === FINAL PURGE DETECTOR — RETURN TO INPUT SCREEN === */
 
-  const noText = el.textContent.trim() === "";
-
-  const rect = el.getBoundingClientRect();
-  const collapsed = rect.height < 40;
-
-  const noVisibleChildren = [...el.querySelectorAll("*")].every(
-    n => n.textContent.trim() === ""
-  );
-
-  return noText && (collapsed || noVisibleChildren);
-}
-
-/* === UNIVERSAL PURGE → RETURN TO INPUT SCREEN === */
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
 
   const out = document.getElementById("out");
   if (!out) return;
 
-  // NEW iOS-safe detector
-  if (isVisuallyBlank(out)) {
+  // iOS purge leaves the border + header, but erases ONLY the innerHTML
+  if (out.innerHTML.trim() === "") {
     try {
       ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
     } catch (e) {
