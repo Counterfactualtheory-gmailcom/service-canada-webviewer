@@ -376,10 +376,21 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
 
-/* === FINAL PURGE-PROOF WKWEBVIEW FIX — NEVER FAILS === */
+<!-- === RETURN TO INPUT SCREEN ON PURGE (NO RELOAD, NO API CALL) === -->
+<script>
 document.addEventListener("visibilitychange", () => {
+  // Trigger only when app resumes from background
   if (!document.hidden) {
-    window.location.replace(window.location.href);
+    try {
+      // Ask Thunkable to switch screens immediately
+      ThunkableWebviewerExtension.postMessage("GO_TO_INPUT");
+    } catch (e) {
+      console.log("Bridge not ready, doing DOM fallback");
+
+      // Fallback: erase output so blank screen auto-shows input screen
+      const out = document.getElementById("out");
+      if (out) out.innerHTML = "";
+    }
   }
 });
   </script>
