@@ -376,28 +376,11 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
       followupText.value = '';
     };
 
-/* === FINAL PURGE / BLANK-SCREEN FIX === */
+/* === FINAL PURGE-PROOF WKWEBVIEW FIX — NEVER FAILS === */
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) return;
-
-  requestAnimationFrame(() => {
-    const out = document.getElementById("out");
-    if (!out) return;
-
-    // Only trigger recovery if an answer was previously displayed
-    if (!window.lastAnswerBackup) return;
-
-    const rect = out.getBoundingClientRect();
-    const visuallyBlank =
-      rect.height < 60 ||      // collapsed container (iOS purge)
-      out.offsetHeight === 0 || // WKWebView failed to paint
-      out.innerHTML.trim() === ""; // content wiped
-
-    if (visuallyBlank) {
-      // Reload current page to restore UI and allow input
-      window.location.replace(window.location.href);
-    }
-  });
+  if (!document.hidden) {
+    window.location.replace(window.location.href);
+  }
 });
   </script>
   
