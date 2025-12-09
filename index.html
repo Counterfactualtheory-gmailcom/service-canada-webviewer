@@ -492,6 +492,7 @@ overlay.style.display = "block";
 
   // --- Close overlay and return to COMPAiSS ---
   closeBtn.onclick = function () {
+  delete document.body.dataset.overlayOpen;   // ⭐ REQUIRED FIX
     overlay.style.display = "none";
 
     // WKWebView-safe blanking (must be data: URI)
