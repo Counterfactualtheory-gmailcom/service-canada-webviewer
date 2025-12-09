@@ -317,39 +317,47 @@ ThunkableWebviewerExtension.receiveMessage(function (msg) {
 
     // ✅ Universal Copy handler
 copyBtn.onclick = () => {
-  // Get the most recent answer (HTML)
   const html = (lastSingleAnswer || "").trim();
   if (!html) {
-      alert("No response yet to copy.");
-      return;
+    alert("No response yet to copy.");
+    return;
   }
 
-  // Convert HTML → clean plain text
+  // Create temporary DOM parser
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = html;
 
-  // Convert line breaks properly
-  let text = tempDiv.innerText
-      .replace(/\n{3,}/g, "\n\n")  // no triple spacing
-      .trim();
+  // Convert <a> tags → Markdown [label](url)
+  tempDiv.querySelectorAll("a[href]").forEach(a => {
+    const label = a.textContent.trim();
+    const url = a.href.trim();
+    const md = `[${label}](${url})`;
+    a.replaceWith(document.createTextNode(md));
+  });
+
+  // Extract readable text without any HTML tags
+  const text = tempDiv.innerText
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 
   try {
-      navigator.clipboard.writeText(text).then(() => {
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => (copyBtn.textContent = "Copy Last Answer"), 1500);
-      });
-  } catch (err) {
-      // Older device fallback
-      const temp = document.createElement("textarea");
-      temp.value = text;
-      temp.style.position = "fixed";
-      temp.style.opacity = "0";
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand("copy");
-      document.body.removeChild(temp);
+    navigator.clipboard.writeText(text).then(() => {
       copyBtn.textContent = "Copied!";
       setTimeout(() => (copyBtn.textContent = "Copy Last Answer"), 1500);
+    });
+  } catch (err) {
+    // iOS fallback
+    const t = document.createElement("textarea");
+    t.value = text;
+    t.style.position = "fixed";
+    t.style.opacity = "0";
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand("copy");
+    document.body.removeChild(t);
+
+    copyBtn.textContent = "Copied!";
+    setTimeout(() => (copyBtn.textContent = "Copy Last Answer"), 1500);
   }
 };
     followupBtn.onclick = async () => {
