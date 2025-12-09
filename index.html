@@ -389,7 +389,10 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 // 1) MAIN purge detector — fires when returning from background
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
-  if (document.body.dataset.overlayOpen === "1") return;
+
+    document.body.dataset.overlayOpen = "";   // ⭐ RESET overlay flag when returning
+
+    if (document.body.dataset.overlayOpen === "1") return;
  
     // ⭐ Notify Thunkable BEFORE the WebView bridge dies
     try {
