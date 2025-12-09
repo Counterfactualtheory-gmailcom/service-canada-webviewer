@@ -485,8 +485,9 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     // Open link in overlay iframe
-    frame.src = url;
-    overlay.style.display = "block";
+document.body.dataset.overlayOpen = "1";   // ⭐ NEW — prevent purge wipe
+frame.src = url;
+overlay.style.display = "block";
   });
 
   // --- Close overlay and return to COMPAiSS ---
