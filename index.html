@@ -477,6 +477,13 @@ frame.src = url;
 overlay.style.display = "block";
   });
 })();
+
+// ⭐ Close overlay on tap anywhere (returns purge safety)
+document.getElementById("sc-browser-overlay").addEventListener("click", () => {
+  document.getElementById("sc-browser-overlay").style.display = "none";
+  document.body.dataset.overlayOpen = "";   // Reset so purge detection works
+});
+  
 </script>
   
 </body>
