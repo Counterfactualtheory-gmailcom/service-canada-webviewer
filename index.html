@@ -396,19 +396,6 @@ if (document.body.dataset.overlayOpen === "1") {
 // Only reset after handling return
 document.body.dataset.overlayOpen = "";
  
-    // ⭐ Notify Thunkable BEFORE the WebView bridge dies
-    try {
-      ThunkableWebviewerExtension.postMessage("SET_RETURN_FLAG");
-    } catch (e) {
-      console.log("Bridge not available — will resend on boot");
-    }
-
-    // ⭐ Clear purged HTML so Thunkable sees blank
-    const out = document.getElementById("out");
-    if (out) out.innerHTML = "";
-  }
-});
-
 // 2) GUARANTEED DELIVERY AFTER A FULL PURGE
 // When iOS kills WebView → HTML reloads → DOMContentLoaded fires
 document.addEventListener("DOMContentLoaded", () => {
