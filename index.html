@@ -390,9 +390,13 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
 
-    document.body.dataset.overlayOpen = "";   // ⭐ RESET overlay flag when returning
+// If overlay is open → DO NOT purge, DO NOT signal Thunkable
+if (document.body.dataset.overlayOpen === "1") {
+    return;   // overlay stays intact
+}
 
-    if (document.body.dataset.overlayOpen === "1") return;
+// Only reset after handling return
+document.body.dataset.overlayOpen = "";
  
     // ⭐ Notify Thunkable BEFORE the WebView bridge dies
     try {
