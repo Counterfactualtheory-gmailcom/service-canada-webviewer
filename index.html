@@ -481,9 +481,35 @@ overlay.style.display = "block";
 })();
 
 // ⭐ Close overlay on tap anywhere (returns purge safety)
-document.getElementById("sc-browser-overlay").addEventListener("click", () => {
+document.getElementById("sc-browser-overlay").addEventListener("click", async () => {
+  // Close overlay
   document.getElementById("sc-browser-overlay").style.display = "none";
-  document.body.dataset.overlayOpen = "";   // Reset so purge detection works
+
+  // Reset purge safety
+  document.body.dataset.overlayOpen = "";
+
+  // ⭐ NEW — If last question exists, automatically regenerate answer
+  if (window.lastQuestion) {
+    loading.style.display = 'block';
+
+    try {
+      const res = await fetch('https://servicecanbackendproduction-production.up.railway.app/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: window.lastQuestion,
+          previousQuestion: ""
+        })
+      });
+
+      const data = await res.json();
+      safeRender(data.answer || '(no response)');
+    } catch (err) {
+      safeRender('⚠️ Error reloading answer: ' + err.message);
+    }
+
+    loading.style.display = 'none';
+  }
 });
   
 </script>
