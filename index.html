@@ -441,8 +441,6 @@ document.getElementById("sc-browser-overlay").addEventListener("click", async ()
   // Reset purge safety
   document.body.dataset.overlayOpen = "";
 
-  // ⭐ NEW — If last question exists, automatically regenerate answer
-// ⭐ Restore exact rendered answer (no regeneration)
 if (window.storedAnswerHTML) {
     outEl.innerHTML = window.storedAnswerHTML;
 }
