@@ -490,27 +490,10 @@ document.getElementById("sc-browser-overlay").addEventListener("click", async ()
   document.body.dataset.overlayOpen = "";
 
   // ⭐ NEW — If last question exists, automatically regenerate answer
-  if (window.lastQuestion) {
-    loading.style.display = 'block';
-
-    try {
-      const res = await fetch('https://servicecanbackendproduction-production.up.railway.app/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question: window.lastQuestion,
-          previousQuestion: ""
-        })
-      });
-
-      const data = await res.json();
-      safeRender(data.answer || '(no response)');
-    } catch (err) {
-      safeRender('⚠️ Error reloading answer: ' + err.message);
-    }
-
-    loading.style.display = 'none';
-  }
+// ⭐ Restore exact rendered answer (no regeneration)
+if (window.storedAnswerHTML) {
+    outEl.innerHTML = window.storedAnswerHTML;
+}
 });
   
 </script>
