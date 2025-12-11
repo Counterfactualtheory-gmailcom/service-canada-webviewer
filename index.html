@@ -523,5 +523,45 @@ color: #0645AD;   /* standard web blue */
 }
 
 </style>
+
+<script>
+// =========================================
+// TRIFECTA PURGE HANDLER (SAFE + MINIMAL)
+// =========================================
+
+// 1) Helper: detect if #out is visually blank
+function isOutBlank() {
+  const out = document.getElementById("out");
+  if (!out) return false;
+  return out.innerHTML.trim() === "";
+}
+
+// 2) On return from background
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+
+    // ⛔ If overlay is open → do nothing (user is browsing links)
+    if (document.body.dataset.overlayOpen === "1") return;
+
+    // 🧠 If content is blank → iOS purged the WebView
+    if (isOutBlank()) {
+      // Move user to follow-up screen
+      document.getElementById("followup-box").scrollIntoView({ behavior: "instant" });
+    }
+  }
+});
+
+// 3) After HARD purge (full reload)
+document.addEventListener("DOMContentLoaded", () => {
+  // ⛔ Overlay restore should not trigger follow-up
+  if (document.body.dataset.overlayOpen === "1") return;
+
+  // If OUT is blank → iOS fully purged the DOM
+  if (isOutBlank()) {
+    document.getElementById("followup-box").scrollIntoView({ behavior: "instant" });
+  }
+});
+</script>
+  
 </body>
 </html>
