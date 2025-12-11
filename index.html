@@ -524,6 +524,36 @@ color: #0645AD;   /* standard web blue */
 
 </style>
 <!-- === END PREMIUM FORMATTING === -->
+
+<script>
+// === UNIVERSAL PURGE PROTECTION (Minimal + Stable) ===
+
+// 1) On minimize → signal Thunkable + clear OUT to blank cleanly
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    try {
+      // Tell Thunkable this session purged
+      ThunkableWebviewerExtension.postMessage("SET_RETURN_FLAG");
+    } catch (e) {
+      console.log("Bridge not ready on visibilitychange");
+    }
+
+    // Clear #out so Thunkable sees a definite blank state
+    const out = document.getElementById("out");
+    if (out) out.innerHTML = "";
+  }
+});
+
+// 2) After a hard purge → WKWebView reloads → DOMContentLoaded fires
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    // Guaranteed fallback signal to Thunkable
+    ThunkableWebviewerExtension.postMessage("SET_RETURN_FLAG");
+  } catch (e) {
+    console.log("Bridge not ready on DOMContentLoaded");
+  }
+});
+</script>
   
 </body>
 </html>
