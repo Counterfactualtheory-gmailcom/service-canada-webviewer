@@ -470,6 +470,12 @@ if (window.storedAnswerHTML) {
 <!-- === COMPAiSS PREMIUM FORMATTING — CSS ONLY (SAFE FOR ALL APPS) === -->
 
 <style>
+
+  /* Prevent list number clipping on iOS */
+  #out {
+    padding-left: 4px;   /* ⭐ FIX: ensures list numbers (1. 2. 3.) are not cut off */
+  }
+  
   /* Paragraph spacing & readability */
   #out p {
     margin-top: 0.6em;
