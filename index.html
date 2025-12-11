@@ -524,5 +524,58 @@ color: #0645AD;   /* standard web blue */
 
 </style>
   
+<script>
+// ===============================
+// FINAL PURGE / OVERLAY HANDLING
+// ===============================
+
+// 1) Prevent wiping answers if overlay is open
+document.body.dataset.overlayOpen = "0";
+
+// 2) When returning from overlay, restore answer
+function closeOverlay() {
+  document.getElementById("sc-browser-overlay").style.display = "none";
+  document.body.dataset.overlayOpen = "0";
+
+  if (window.storedAnswerHTML) {
+    document.getElementById("out").innerHTML = window.storedAnswerHTML;
+  }
+}
+
+// Override existing overlay close
+document.getElementById("sc-browser-overlay")
+  .addEventListener("click", closeOverlay);
+
+// 3) PURGE LOGIC: only wipe answer on real minimize/purge
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+
+    // If overlay is active → DO NOT wipe; stay on answer
+    if (document.body.dataset.overlayOpen === "1") return;
+
+    // Real minimize / purge → wipe answer, force follow-up screen
+    const out = document.getElementById("out");
+    if (out) out.innerHTML = "";
+  }
+});
+
+// 4) Overlay open handler (already present in your code)
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("a[href]");
+  if (!a) return;
+
+  const url = a.href;
+  if (!/^https?:/.test(url)) return;
+
+  e.preventDefault();
+  const overlay = document.getElementById("sc-browser-overlay");
+  const frame = document.getElementById("sc-browser-frame");
+
+  window.storedAnswerHTML = document.getElementById("out").innerHTML;
+  frame.src = url;
+  overlay.style.display = "block";
+  document.body.dataset.overlayOpen = "1";
+});
+</script>
 </body>
 </html>
