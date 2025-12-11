@@ -471,51 +471,58 @@ if (window.storedAnswerHTML) {
 
 <style>
 
-  /* Prevent list number clipping on iOS */
-  #out {
-    padding-left: 4px;   /* ⭐ FIX: ensures list numbers (1. 2. 3.) are not cut off */
-  }
-  
-  /* Paragraph spacing & readability */
-  #out p {
-    margin-top: 0.6em;
-    margin-bottom: 0.6em;
-    line-height: 1.45;
-  }
+<!-- === COMPAiSS PREMIUM FORMATTING — CSS ONLY (SAFE FOR ALL APPS) === -->
+<style>
 
-  /* Clean branded hyperlinks */
-  #out a {
-    color: var(--accent);
-    text-decoration: underline;
-    font-weight: 500;
-  }
-  #out a:hover {
-    opacity: 0.85;
-  }
+/* --- FIX: Prevent iOS clipping of numbered lists and bullets --- */
+#out {
+  padding-left: 8px !important;     /* Ensures list markers are never clipped */
+}
 
-  /* Elegant blockquotes for policy quotations */
-  #out blockquote {
-    border-left: 4px solid var(--accent);
-    padding-left: 12px;
-    margin-left: 0;
-    margin-top: 0.6em;
-    margin-bottom: 0.6em;
-    color: #555;
-    font-style: italic;
-  }
+/* Lists (merged fix + spacing rules) */
+#out ol,
+#out ul {
+  padding-left: 1.4em !important;   /* Enough space for iOS list markers */
+  margin-left: 0 !important;        /* Prevent negative browser margin */
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
 
-  /* Clean bullet & number lists */
-  #out ul, #out ol {
-    padding-left: 1.2em !important;
-    margin-top: 0.3em;
-    margin-bottom: 0.8em;
-  }
-  #out li {
-    margin-bottom: 0.25em;
-    line-height: 1.4;
-  }
+#out li {
+  padding-left: 2px;                /* Micro-indent for safety */
+  margin-bottom: 0.25em;
+  line-height: 1.4;
+}
+
+/* Paragraph spacing & readability */
+#out p {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.45;
+}
+
+/* Clean branded hyperlinks */
+#out a {
+  color: var(--accent);
+  text-decoration: underline;
+  font-weight: 500;
+}
+#out a:hover {
+  opacity: 0.85;
+}
+
+/* Elegant blockquotes for policy quotations */
+#out blockquote {
+  border-left: 4px solid var(--accent);
+  padding-left: 12px;
+  margin-left: 0;
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+  color: #555;
+  font-style: italic;
+}
+
 </style>
-
 <!-- === END PREMIUM FORMATTING === -->
   
 </body>
