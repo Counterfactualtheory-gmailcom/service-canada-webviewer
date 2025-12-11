@@ -526,28 +526,36 @@ color: #0645AD;   /* standard web blue */
 <!-- === END PREMIUM FORMATTING === -->
 
 <script>
-// === UNIVERSAL PURGE PROTECTION (Minimal + Stable) ===
+// === UNIVERSAL PURGE PROTECTION (Corrected for TRIFECTA) ===
 
-// 1) On minimize → signal Thunkable + clear OUT to blank cleanly
+// 1) On minimize/purge → signal Thunkable, but ONLY if overlay is not active
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
+
+    // ❌ If returning from overlay, do NOT wipe answer
+    if (document.body.dataset.overlayOpen === "1") {
+      return;   // <-- the missing line that caused everything
+    }
+
+    // ✅ Safe to treat this as a purge/minimize
     try {
-      // Tell Thunkable this session purged
       ThunkableWebviewerExtension.postMessage("SET_RETURN_FLAG");
     } catch (e) {
       console.log("Bridge not ready on visibilitychange");
     }
 
-    // Clear #out so Thunkable sees a definite blank state
+    // Clear #out so Thunkable sees a real blank state
     const out = document.getElementById("out");
     if (out) out.innerHTML = "";
   }
 });
 
-// 2) After a hard purge → WKWebView reloads → DOMContentLoaded fires
+// 2) After a true hard purge (WebView reload)
 document.addEventListener("DOMContentLoaded", () => {
+  // Only notify Thunkable on real purges, not overlay restores
+  if (document.body.dataset.overlayOpen === "1") return;
+
   try {
-    // Guaranteed fallback signal to Thunkable
     ThunkableWebviewerExtension.postMessage("SET_RETURN_FLAG");
   } catch (e) {
     console.log("Bridge not ready on DOMContentLoaded");
