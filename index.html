@@ -521,35 +521,7 @@ color: #0645AD;   /* standard web blue */
   color: #555;
   font-style: italic;
 }
-
 </style>
-
-<script>
-// =========================================
-// TRIFECTA PURGE HANDLER (SAFE + MINIMAL)
-// =========================================
-
-// 1) Check if OUT content is empty or missing
-function isPurged() {
-  const out = document.getElementById("out");
-  if (!out) return true;
-  return out.innerHTML.trim() === "";
-}
-
-// 2) On returning from background
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) return;
-
-  // If overlay is open → this is NOT a purge
-  if (document.body.dataset.overlayOpen === "1") return;
-
-  // TRUE purge → move to SC follow-up (SC's version of DAL input)
-  if (isPurged()) {
-    document.getElementById("followup-box")
-      .scrollIntoView({ behavior: "instant" });
-  }
-});
-</script>
   
 </body>
 </html>
