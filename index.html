@@ -387,6 +387,17 @@ copyBtn.onclick = () => {
     setTimeout(() => (copyBtn.textContent = "Copy Last Answer"), 1500);
   }
 };
+
+const restartBtn = document.getElementById("restart-btn");
+
+if (restartBtn) {
+  restartBtn.onclick = () => {
+    try {
+      ThunkableWebviewerExtension.postMessage("NAVIGATE_INPUT");
+    } catch (e) {}
+  };
+}
+    
     followupBtn.onclick = async () => {
       const q = followupText.value.trim();
       if (!q) return;
