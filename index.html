@@ -410,26 +410,6 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
 </div>
 
 <script>
-(function() {
-
-  const overlay = document.getElementById("sc-browser-overlay");
-  const frame = document.getElementById("sc-browser-frame");
-
-  // --- Replace default link behavior ---
-  document.addEventListener("click", function (e) {
-    const a = e.target.closest && e.target.closest("a[href]");
-    if (!a) return;
-
-    const url = a.href;
-    if (!/^https?:/i.test(url)) return;
-
-    e.preventDefault();
-
-    // Open link in overlay iframe
-frame.src = url;
-overlay.style.display = "block";
-  });
-})();
 
 // Handle requests from Thunkable to open links in the overlay
 ThunkableWebviewerExtension.receiveMessage(msg => {
