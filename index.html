@@ -231,8 +231,7 @@ lastSingleAnswer = clean2;
 // Append into the output box
 if (outEl.textContent.includes('Waiting for content')) outEl.innerHTML = '';
 outEl.innerHTML += (outEl.innerHTML ? '<hr>' : '') + clean2;
-window.storedAnswerHTML = outEl.innerHTML;   // ⭐ Save fully rendered answer
-
+  
   /* -----------------------------------------------------------
      DAL–McGill DOM REFRESH BLOCK — triggers reflow & wake-up
   ----------------------------------------------------------- */
