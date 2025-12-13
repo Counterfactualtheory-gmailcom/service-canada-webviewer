@@ -427,7 +427,6 @@ const res = await fetch('https://servicecanbackendproduction-production.up.railw
     e.preventDefault();
 
     // Open link in overlay iframe
-document.body.dataset.overlayOpen = "1";   // ⭐ NEW — prevent purge wipe
 frame.src = url;
 overlay.style.display = "block";
   });
