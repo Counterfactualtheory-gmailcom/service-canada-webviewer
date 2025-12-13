@@ -185,28 +185,33 @@
 </head>
 
 <body>
-  <div class="wrap">
-    <div id="out">Waiting for content…</div>
+<div class="wrap">
 
-  <!-- ⭐ NEW: Restart session button -->
+  <!-- Answer output -->
+  <div id="out">Waiting for content…</div>
+
+  <!-- ⭐ Start New Session (user-initiated recovery) -->
   <button id="restart-btn">Start a New Session</button>
 
+  <!-- Follow-up input -->
   <div id="followup-box">
-    ...
-  </div>
+    <textarea
+      id="followup-text"
+      placeholder="Tap & type your next question, issue, or concern..."
+    ></textarea>
 
-  <div id="dbg" class="debug"></div>
-</div>
-    
-    <div id="followup-box">
-      <textarea id="followup-text" placeholder="Tap & type your next question, issue, or concern..."></textarea>
-      <button id="followup-btn">Submit</button>
-      <button id="copy-btn">Copy Last Answer</button>
-      <div id="loading">Answer coming<span>.</span><span>.</span><span>.</span></div>
+    <button id="followup-btn">Submit</button>
+    <button id="copy-btn">Copy Last Answer</button>
+
+    <div id="loading">
+      Answer coming<span>.</span><span>.</span><span>.</span>
     </div>
-
-    <div id="dbg" class="debug"></div>
   </div>
+
+  <!-- Debug (optional) -->
+  <div id="dbg" class="debug"></div>
+
+</div>
 
   <script>
     marked.setOptions({ gfm:true, breaks:true, mangle:false, headerIds:false });
