@@ -496,7 +496,26 @@ color: #0645AD;   /* standard web blue */
   color: #555;
   font-style: italic;
 }
-</style>
+
+/* === PURGE RECOVERY FOOTER (STATIC, NO JS) === */
+#purge-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #f7f7f7;
+  border-top: 1px solid #ddd;
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+  line-height: 30px;
+  opacity: 0.65;
+  z-index: 9999;
+  pointer-events: none;
+}
   
+</style>
+<div id="purge-footer">Swipe right to reload</div>  
 </body>
 </html>
