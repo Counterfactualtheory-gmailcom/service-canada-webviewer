@@ -56,11 +56,17 @@
 
 /* --- Center answer output box (same as McGill) --- */
 #out {
-  width: calc(100% - 30px);    /* was 60px → now wider */
-  margin-left: 15px;           /* was 30px */
-  margin-right: 15px;          /* was 30px */
+  width: auto;
+
+  /* same padding-cancel technique */
+  margin-left: calc(-1 * var(--pad));
+  margin-right: calc(-1 * var(--pad));
+
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: auto;
   word-wrap: break-word;
 }
     
