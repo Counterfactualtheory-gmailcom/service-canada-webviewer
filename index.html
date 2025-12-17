@@ -124,12 +124,11 @@
 #followup-box {
   position: relative;
 
-  /* 🔧 Narrow the box just enough to stay inside red frame */
-  width: calc(100% - 8px);     /* ← THIS IS THE KEY CHANGE */
-
+  width: 100%;              /* keep full width */
   margin-top: 12px;
-  margin-left: auto;
-  margin-right: auto;
+
+  margin-left: -4px;        /* ← move LEFT edge only */
+  margin-right: 0;          /* ← lock RIGHT edge */
 
   padding: 12px;
 
