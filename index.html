@@ -122,13 +122,15 @@
     }
 
 #followup-box {
-  width: auto;
+  position: relative;
 
-  /* cancel .wrap padding exactly */
-  margin-left: calc(-1 * var(--pad));
-  margin-right: calc(-1 * var(--pad));
+  width: calc(100vw - 32px);     /* full visual width */
+  max-width: calc(var(--wrap) - 32px);
+
+  left: 50%;
+  transform: translateX(-50%);  /* TRUE visual centering */
+
   margin-top: 12px;
-
   padding: 12px;
 
   background: #ffffff;
