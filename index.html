@@ -116,14 +116,16 @@
     }
 
 #followup-box {
-  width: calc(100% + 32px);   /* cancel .wrap padding explicitly */
-  margin-left: -16px;   /* cancel .wrap padding */
-  margin-right: -16px;  /* cancel .wrap padding */
+  width: calc(100vw - 32px);   /* viewport width minus safe gutter */
+  max-width: calc(var(--wrap) - 32px);
+  margin: 12px auto 0 auto;    /* center it */
   padding: 12px;
+
   background: #ffffff;
   border-radius: 8px;
   border: 2px solid var(--accent);
   box-shadow: 0 0 6px rgba(255, 0, 0, 0.2);
+
   box-sizing: border-box;
 }
 
