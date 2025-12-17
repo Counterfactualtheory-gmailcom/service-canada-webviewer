@@ -116,8 +116,13 @@
     }
 
 #followup-box {
-  width: 100%;
-  margin: 12px 0 0 0;      /* no auto centering */
+  width: auto;
+
+  /* cancel .wrap padding exactly */
+  margin-left: calc(-1 * var(--pad));
+  margin-right: calc(-1 * var(--pad));
+  margin-top: 12px;
+
   padding: 12px;
 
   background: #ffffff;
@@ -127,7 +132,7 @@
 
   box-sizing: border-box;
 }
-
+    
 /* --- Larger textarea (cleanest, safest) --- */
 #followup-text {
   width: 100%;                /* fills followup-box width */
