@@ -124,13 +124,13 @@
 #followup-box {
   position: relative;
 
-  width: calc(100vw - 32px);     /* full visual width */
-  max-width: calc(var(--wrap) - 32px);
-
-  left: 50%;
-  transform: translateX(-50%);  /* TRUE visual centering */
+  /* 🔧 Narrow the box just enough to stay inside red frame */
+  width: calc(100% - 8px);     /* ← THIS IS THE KEY CHANGE */
 
   margin-top: 12px;
+  margin-left: auto;
+  margin-right: auto;
+
   padding: 12px;
 
   background: #ffffff;
