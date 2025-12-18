@@ -48,11 +48,14 @@
       font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       -webkit-text-size-adjust: 100%;
     }
-    .wrap {
-      max-width: var(--wrap);
-      margin: 0 auto;
-      padding: var(--pad);
-    }
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: calc(var(--pad) + 6px);   /* 🔹 matches McGill frame depth */
+  border: 3px solid var(--accent);   /* 🔹 McGill-equivalent thickness */
+  border-radius: 12px;               /* 🔹 McGill corner radius */
+  background: var(--bg-page);
+}
 
 /* --- Center answer output box (same as McGill) --- */
 #out {
@@ -127,8 +130,8 @@
   width: 100%;              /* keep full width */
   margin-top: 12px;
 
-  margin-left: -4px;        /* ← move LEFT edge only */
-  margin-right: 0;          /* ← lock RIGHT edge */
+  margin-left: calc(-1 * var(--pad));
+  margin-right: calc(-1 * var(--pad));
 
   padding: 12px;
 
